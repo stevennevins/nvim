@@ -7,8 +7,18 @@ end
 
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Package manager
+  use 'prettier/vim-prettier'
+  --use 'tomlion/vim-solidity'
+  use 'tpope/vim-projectionist'
+  use 'olimorris/onedarkpro.nvim'
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use 'nvim-treesitter/nvim-treesitter'
+  use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+  use 'tpope/vim-fugitive' -- Git commands in nvim
+  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
+  use {'numToStr/Comment.nvim'}
+  use {'windwp/nvim-autopairs'}
   use 'neovim/nvim-lspconfig'
   use 'williamboman/nvim-lsp-installer'
   use 'hrsh7th/nvim-cmp'
@@ -17,21 +27,112 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-path'
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
+  use 'voldikss/vim-floaterm'
   end
   )
 
+--jess archer settings                                                                                                                                                   
+vim.o.expandtab = true                                                                                                                                                   
+vim.o.shiftwidth = 4                                                                                                                                                     
+vim.o.tabstop = 4                                                                                                                                                        
+vim.o.signcolumn = 'yes:2'                                                                                                                                               
+vim.o.relativenumber = true                                                                                                                                              
+vim.o.number = true                                                                                                                                                      
+vim.o.termguicolors = true                                                                                                                                               
+vim.o.undofile = true                                                                                                                                                    
+vim.o.title = true                                                                                                                                                       
+vim.o.ignorecase = true                                                                                                                                                  
+vim.o.smartcase = true                                                                                                                                                   
+vim.o.wildmode = 'longest:full,full'                                                                                                                                     
+vim.o.wrap = false                                                                                                                                                       
+vim.o.list = true                                                                                                                                                        
+vim.o.listchars = 'tab:▸ ,trail:·'                                                                                                                                       
+vim.o.mouse = 'a'                                                                                                                                                        
+vim.o.splitright = true                                                                                                                                                  
+vim.o.splitbelow = true                                                                                                                                                  
+vim.o.scrolloff = 10                                                                                                                                                      
+vim.o.sidescrolloff = 10                                                                                                                                                  
+vim.o.clipboard = 'unnamedplus' -- Use Linux system clipboard                                                                                                            
+vim.o.confirm = true                                                                                                                                                     
+vim.o.backup = true                                                                                                                                                      
+vim.o.backupdir = vim.fn.stdpath 'data' .. '/backup//'                                                                                                                   
+vim.o.showmode = false                                                                                                                                                   
+vim.o.fillchars = 'eob: '                                                                                                                                              
+vim.o.hlsearch = false                                                                                                                                                   
+vim.o.breakindent = true                                                                                                                                                 
+vim.o.updatetime = 250  
+-- Highlight on yank
+vim.cmd [[
+  augroup YankHighlight
+    autocmd!
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank()
+  augroup end
+]]
+-- prettier on save
+vim.cmd [[
+autocmd BufWritePre * Prettier
+]]
+-- Comment
+require('Comment').setup()
+-- nvim-autopairs
+require('nvim-autopairs').setup{}
+-- vim-projectionist
 --Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+--Set colorscheme
+vim.cmd [[colorscheme onedarkpro]]
+-- Floatterm
+vim.cmd([[
+let g:floaterm_keymap_toggle= '<Leader>fo'
+]])
+
+-- Lualine 
+require('lualine').setup {
+  options = {
+    icons_enabled = false,
+    theme = 'onedark',
+    component_separators = '|',
+    section_separators = '',
+  },
+}
+
+-- Gitsigns
+require('gitsigns').setup {
+  signs = {
+    add = { text = '+' },
+    change = { text = '~' },
+    delete = { text = '_' },
+    topdelete = { text = '‾' },
+    changedelete = { text = '~' },
+  },
+}
+
+-- vim-projectionist
+
+vim.cmd[[
+let g:projectionist_heuristics = {
+\ '*':{
+\    'src/**/*.t.sol':{'alternate': 'src/test/**/{}.t.sol'},
+\   'src/test/**/*.t.sol':{'alternate': 'src/**/{}.sol'},
+\    'src/*.sol':{'alternate': 'src/test/{}.t.sol'},
+\   'src/test/*.t.sol':{'alternate':'src/{}.sol'}
+\}
+\}
+]]
 
 -- Lsp setup
 vim.cmd("au BufRead,BufNewFile *.sol setfiletype solidity");
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 require'lspconfig'.solidity_ls.setup{
 	capabilities=capabilities,
+	flags = {debounce_text_changes = 500},
 	on_attach = function(client)
 		-- Keymaps
+		-- foundry
+		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>T', '<cmd>FloatermNew --autoclose=0 make test<CR>', {noremap=true})
+		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>U', '<cmd>FloatermNew --autoclose=0 make users<CR>', {noremap=true})
 		-- unsupported in lsp atm
 		vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
 		vim.api.nvim_buf_set_keymap(0, 'n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {noremap=true})
@@ -42,14 +143,6 @@ require'lspconfig'.solidity_ls.setup{
 		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>r', '<cmd>lua vim.lsp.buf.rename()<CR>', {noremap = true})
 		-- supported in lsp
 		vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
-		-- Use LSP as the handler for omnifunc.
-      		--    See `:help omnifunc` and `:help ins-completion` for more information.
-      		vim.api.nvim_buf_set_option(0, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-      		-- Use LSP as the handler for formatexpr.
-      		--    See `:help formatexpr` for more information.
-      		vim.api.nvim_buf_set_option(0, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
-      		-- For plugins with an `on_attach` callback, call them here. For example:
-      		-- require('completion').on_attach()
 	end,
 }
 -- Setup nvim-cmp.
@@ -81,6 +174,57 @@ vim.opt.completeopt={"menu","menuone","noselect"}
     })
   })
 
+-- Parsers must be installed manually via :TSInstall
+require('nvim-treesitter.configs').setup {
+  highlight = {
+    enable = true, -- false will disable the whole extension
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = 'gnn',
+      node_incremental = 'grn',
+      scope_incremental = 'grc',
+      node_decremental = 'grm',
+    },
+  },
+  indent = {
+    enable = true,
+  },
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ['af'] = '@function.outer',
+        ['if'] = '@function.inner',
+        ['ac'] = '@class.outer',
+        ['ic'] = '@class.inner',
+      },
+    },
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        [']m'] = '@function.outer',
+        [']]'] = '@class.outer',
+      },
+      goto_next_end = {
+        [']M'] = '@function.outer',
+        [']['] = '@class.outer',
+      },
+      goto_previous_start = {
+        ['[m'] = '@function.outer',
+        ['[['] = '@class.outer',
+      },
+      goto_previous_end = {
+        ['[M'] = '@function.outer',
+        ['[]'] = '@class.outer',
+      },
+    },
+  },
+}
 -- Telescope Setup
 --
 local action_state = require('telescope.actions.state') -- runtime (Plugin) exists somewhere
@@ -96,6 +240,15 @@ require('telescope').setup{
 	}
 }
 require('telescope').load_extension('fzf')
+vim.api.nvim_set_keymap('n', '<leader><space>', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sf', [[<cmd>lua require('telescope.builtin').find_files({previewer = false})<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sb', [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sh', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>st', [[<cmd>lua require('telescope.builtin').tags()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sd', [[<cmd>lua require('telescope.builtin').grep_string()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>sp', [[<cmd>lua require('telescope.builtin').live_grep()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>so', [[<cmd>lua require('telescope.builtin').tags{ only_current_buffer = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>?', [[<cmd>lua require('telescope.builtin').oldfiles()<CR>]], { noremap = true, silent = true })
 
 local mappings = {}
 

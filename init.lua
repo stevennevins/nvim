@@ -8,7 +8,6 @@ end
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Package manager
   use 'prettier/vim-prettier'
-  --use 'tomlion/vim-solidity'
   use 'tpope/vim-projectionist'
   use 'olimorris/onedarkpro.nvim'
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
@@ -76,7 +75,6 @@ autocmd BufWritePre * Prettier
 require('Comment').setup()
 -- nvim-autopairs
 require('nvim-autopairs').setup{}
--- vim-projectionist
 --Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '

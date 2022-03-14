@@ -59,7 +59,7 @@ vim.o.showmode = false
 vim.o.fillchars = 'eob: '                                                                                                                                              
 vim.o.hlsearch = false                                                                                                                                                   
 vim.o.breakindent = true                                                                                                                                                 
-vim.o.updatetime = 250  
+vim.o.updatetime = 150  
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -125,12 +125,12 @@ vim.cmd("au BufRead,BufNewFile *.sol setfiletype solidity");
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 require'lspconfig'.solidity_ls.setup{
 	capabilities=capabilities,
-	flags = {debounce_text_changes = 500},
+	flags = {debounce_text_changes = 150},
 	on_attach = function(client)
 		-- Keymaps
 		-- foundry
 		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>T', '<cmd>FloatermNew --autoclose=0 make test<CR>', {noremap=true})
-		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>U', '<cmd>FloatermNew --autoclose=0 make users<CR>', {noremap=true})
+		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>U', '<cmd>FloatermNew --autoclose=1 make users<CR>', {noremap=true})
 		-- unsupported in lsp atm
 		vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
 		vim.api.nvim_buf_set_keymap(0, 'n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {noremap=true})

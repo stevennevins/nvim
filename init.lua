@@ -9,7 +9,7 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Package manager
   use 'prettier/vim-prettier'
   use 'tpope/vim-projectionist'
-  use 'olimorris/onedarkpro.nvim'
+  use 'Mofiqul/vscode.nvim'
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-treesitter/nvim-treesitter'
@@ -80,7 +80,14 @@ vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 --Set colorscheme
-vim.cmd [[colorscheme onedarkpro]]
+vim.g.vscode_style = "dark"
+-- Enable transparent background.
+vim.g.vscode_transparent = 1
+-- Enable italic comment
+vim.g.vscode_italic_comment = 1
+-- Disable nvim-tree background color 
+vim.g.vscode_disable_nvimtree_bg = true 
+vim.cmd[[colorscheme vscode]]
 -- Floatterm
 vim.cmd([[
 let g:floaterm_keymap_toggle= '<Leader>fo'
@@ -89,8 +96,8 @@ let g:floaterm_keymap_toggle= '<Leader>fo'
 -- Lualine 
 require('lualine').setup {
   options = {
-    icons_enabled = false,
-    theme = 'onedark',
+    --icons_enabled = false,
+    theme = 'vscode',
     component_separators = '|',
     section_separators = '',
   },

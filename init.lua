@@ -14,6 +14,7 @@ require('packer').startup(function(use)
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-treesitter/nvim-treesitter'
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+  use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
   use 'tpope/vim-fugitive' -- Git commands in nvim
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use {'numToStr/Comment.nvim'}
@@ -96,12 +97,14 @@ let g:floaterm_keymap_toggle= '<Leader>fo'
 -- Lualine 
 require('lualine').setup {
   options = {
-    --icons_enabled = false,
     theme = 'vscode',
-    component_separators = '|',
+    component_separators = '',
     section_separators = '',
   },
 }
+
+-- bufferline
+require('bufferline').setup{}
 
 -- Gitsigns
 require('gitsigns').setup {
@@ -119,7 +122,7 @@ require('gitsigns').setup {
 vim.cmd[[
 let g:projectionist_heuristics = {
 \ '*':{
-\    'src/**/*.t.sol':{'alternate': 'src/test/**/{}.t.sol'},
+\    'src/**/*.sol':{'alternate': 'src/test/**/{}.t.sol'},
 \   'src/test/**/*.t.sol':{'alternate': 'src/**/{}.sol'},
 \    'src/*.sol':{'alternate': 'src/test/{}.t.sol'},
 \   'src/test/*.t.sol':{'alternate':'src/{}.sol'}
@@ -131,24 +134,24 @@ let g:projectionist_heuristics = {
 vim.cmd("au BufRead,BufNewFile *.sol setfiletype solidity");
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 require'lspconfig'.solidity_ls.setup{
-	capabilities=capabilities,
-	flags = {debounce_text_changes = 150},
-	on_attach = function(client)
-		-- Keymaps
-		-- foundry
-		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>T', '<cmd>FloatermNew --autoclose=0 make test<CR>', {noremap=true})
-		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>U', '<cmd>FloatermNew --autoclose=1 make users<CR>', {noremap=true})
-		-- unsupported in lsp atm
-		vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
-		vim.api.nvim_buf_set_keymap(0, 'n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {noremap=true})
-		vim.api.nvim_buf_set_keymap(0, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', {noremap = true})
-		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dn', '<cmd>lua vim.diagnostic.goto_next<CR>', {noremap = true})
-		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dp', '<cmd>lua vim.diagnostic.goto_prev<CR>', {noremap = true})
-		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dl', '<cmd>Telescope diagnostics<CR>', {noremap=true})
-		vim.api.nvim_buf_set_keymap(0, 'n', '<leader>r', '<cmd>lua vim.lsp.buf.rename()<CR>', {noremap = true})
-		-- supported in lsp
-		vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
-	end,
+    capabilities=capabilities,
+    flags = {debounce_text_changes = 150},
+    on_attach = function(client)
+        -- Keymaps
+        -- foundry
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>T', '<cmd>FloatermNew --autoclose=0 make test<CR>', {noremap=true})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>U', '<cmd>FloatermNew --autoclose=1 make users<CR>', {noremap=true})
+        -- unsupported in lsp atm
+        vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
+        vim.api.nvim_buf_set_keymap(0, 'n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {noremap=true})
+        vim.api.nvim_buf_set_keymap(0, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', {noremap = true})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dn', '<cmd>lua vim.diagnostic.goto_next<CR>', {noremap = true})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dp', '<cmd>lua vim.diagnostic.goto_prev<CR>', {noremap = true})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dl', '<cmd>Telescope diagnostics<CR>', {noremap=true})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>r', '<cmd>lua vim.lsp.buf.rename()<CR>', {noremap = true})
+        -- supported in lsp
+        vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
+    end,
 }
 -- Setup nvim-cmp.
 vim.opt.completeopt={"menu","menuone","noselect"}
@@ -217,14 +220,14 @@ require('nvim-treesitter.configs').setup {
 local action_state = require('telescope.actions.state') -- runtime (Plugin) exists somewhere
 
 require('telescope').setup{
-	defaults = {
-		prompt_prefix = "$ ",
-		mappings = {
-			i = {
-				["<c-a>"] = function() print(vim.inspect(action_state.get_selected_entry())) end
-			}
-		}
-	}
+    defaults = {
+        prompt_prefix = "$ ",
+        mappings = {
+            i = {
+                ["<c-a>"] = function() print(vim.inspect(action_state.get_selected_entry())) end
+            }
+        }
+    }
 }
 require('telescope').load_extension('fzf')
 vim.api.nvim_set_keymap('n', '<leader><space>', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })

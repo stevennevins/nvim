@@ -16,7 +16,7 @@ require('packer').startup(function(use)
   use 'nvim-treesitter/nvim-treesitter'
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
-  use {'tpope/vim-fugitive', cmd = 'G'} -- Git commands in nvim
+  use 'tpope/vim-fugitive'
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use {'numToStr/Comment.nvim'}
   use {'windwp/nvim-autopairs'}
@@ -29,6 +29,8 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   use 'voldikss/vim-floaterm'
+  use {"folke/which-key.nvim"}
+  use {"folke/todo-comments.nvim", requires = "nvim-lua/plenary.nvim"}
   end
   )
 
@@ -61,7 +63,8 @@ vim.o.showmode = false
 vim.o.fillchars = 'eob: '                                                                                                                                              
 vim.o.hlsearch = false                                                                                                                                                   
 vim.o.breakindent = true                                                                                                                                                 
-vim.o.updatetime = 150  
+vim.o.updatetime = 250  
+vim.o.redrawtime = 10000  
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -69,32 +72,28 @@ vim.cmd [[
     autocmd TextYankPost * silent! lua vim.highlight.on_yank()
   augroup end
 ]]
+
+-- comment
+require('Comment').setup()
+
+-- todo-comments
+require("todo-comments").setup()
+
+-- which-key
+require("which-key").setup()
+
 -- neoscroll 
 
-require('neoscroll').setup({
-    -- Set any options as needed
-})
+require('neoscroll').setup()
 
-local t = {}
-
--- Syntax: t[keys] = {function, {function arguments}}
-t['<C-u>'] = {'scroll', {'-vim.wo.scroll', 'true', '250'}}
-t['<C-d>'] = {'scroll', { 'vim.wo.scroll', 'true', '250'}}
-t['<C-b>'] = {'scroll', {'-vim.api.nvim_win_get_height(0)', 'true', '450'}}
-t['<C-f>'] = {'scroll', { 'vim.api.nvim_win_get_height(0)', 'true', '450'}}
-t['<C-y>'] = {'scroll', {'-0.10', 'false', '100'}}
-t['<C-e>'] = {'scroll', { '0.10', 'false', '100'}}
-t['zt']    = {'zt', {'250'}}
-t['zz']    = {'zz', {'250'}}
-t['zb']    = {'zb', {'250'}}
-
-require('neoscroll.config').set_mappings(t)
+require('neoscroll.config').set_mappings {
+  ['<C-u>'] = { 'scroll', { '-vim.wo.scroll', 'true', '50' } },
+  ['<C-d>'] = { 'scroll', { 'vim.wo.scroll', 'true', '50' } },
+}
 -- prettier on save
 vim.cmd [[
 autocmd BufWritePre * Prettier
 ]]
--- Comment
-require('Comment').setup()
 -- nvim-autopairs
 require('nvim-autopairs').setup{}
 --Remap space as leader key
@@ -162,6 +161,8 @@ require'lspconfig'.solidity_ls.setup{
         -- foundry
         vim.api.nvim_buf_set_keymap(0, 'n', '<leader>T', '<cmd>FloatermNew --autoclose=0 make test<CR>', {noremap=true})
         vim.api.nvim_buf_set_keymap(0, 'n', '<leader>U', '<cmd>FloatermNew --autoclose=1 make users<CR>', {noremap=true})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>B', '<cmd>FloatermNew --autoclose=0 make build<CR>', {noremap=true})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>F', '<cmd>FloatermNew --autoclose=1 make prettier<CR>', {noremap=true})
         -- unsupported in lsp atm
         vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
         vim.api.nvim_buf_set_keymap(0, 'n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {noremap=true})
@@ -173,6 +174,7 @@ require'lspconfig'.solidity_ls.setup{
         -- supported in lsp
         vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
     end,
+    -- cmd = {"solc-0.8.11", "--lsp"},
 }
 -- Setup nvim-cmp.
 vim.opt.completeopt={"menu","menuone","noselect"}
@@ -224,7 +226,7 @@ local luasnip = require("luasnip")
     },
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-      --{ name = 'luasnip' }, -- For luasnip users.
+      { name = 'luasnip' }, -- For luasnip users.
     }, {
       { name = 'buffer' },
     })
@@ -252,8 +254,8 @@ require('telescope').setup{
 }
 require('telescope').load_extension('fzf')
 vim.api.nvim_set_keymap('n', '<leader><space>', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files({previewer = false})<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>f', [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>f', [[<cmd>lua require('telescope.builtin').find_files({previewer = false})<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fh', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ft', [[<cmd>lua require('telescope.builtin').tags()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fs', [[<cmd>lua require('telescope.builtin').grep_string()<CR>]], { noremap = true, silent = true })

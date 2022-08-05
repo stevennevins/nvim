@@ -31,6 +31,7 @@ require('packer').startup(function(use)
   use 'voldikss/vim-floaterm'
   use {"folke/which-key.nvim"}
   use {"folke/todo-comments.nvim", requires = "nvim-lua/plenary.nvim"}
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
   end
   )
 

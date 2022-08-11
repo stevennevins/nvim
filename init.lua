@@ -26,12 +26,15 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-copilot'
   use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
   use 'voldikss/vim-floaterm'
   use {"folke/which-key.nvim"}
   use {"folke/todo-comments.nvim", requires = "nvim-lua/plenary.nvim"}
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+
+  use 'github/copilot.vim'
   end
   )
 
@@ -58,14 +61,15 @@ vim.o.scrolloff = 25
 vim.o.sidescrolloff = 10                                                                                                                                                  
 vim.o.clipboard = 'unnamedplus' -- Use Linux system clipboard                                                                                                            
 vim.o.confirm = true                                                                                                                                                     
-vim.o.backup = true                                                                                                                                                      
+vim.o.backup = false                                                                                                                                                      
 vim.o.backupdir = vim.fn.stdpath 'data' .. '/backup//'                                                                                                                   
 vim.o.showmode = false                                                                                                                                                   
 vim.o.fillchars = 'eob: '                                                                                                                                              
 vim.o.hlsearch = false                                                                                                                                                   
 vim.o.breakindent = true                                                                                                                                                 
-vim.o.updatetime = 250  
-vim.o.redrawtime = 10000  
+vim.o.updatetime = 50  
+vim.o.redrawtime = 1000  
+vim.o.cursorline=true
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -87,10 +91,6 @@ require("which-key").setup()
 
 require('neoscroll').setup()
 
-require('neoscroll.config').set_mappings {
-  ['<C-u>'] = { 'scroll', { '-vim.wo.scroll', 'true', '50' } },
-  ['<C-d>'] = { 'scroll', { 'vim.wo.scroll', 'true', '50' } },
-}
 -- prettier on save
 vim.cmd [[
 autocmd BufWritePre * Prettier
@@ -143,10 +143,10 @@ require('gitsigns').setup {
 vim.cmd[[
 let g:projectionist_heuristics = {
 \ '*':{
-\    'src/**/*.sol':{'alternate': 'src/test/**/{}.t.sol'},
-\   'src/test/**/*.t.sol':{'alternate': 'src/**/{}.sol'},
-\    'src/*.sol':{'alternate': 'src/test/{}.t.sol'},
-\   'src/test/*.t.sol':{'alternate':'src/{}.sol'}
+\    'src/**/*.sol':{'alternate': 'test/**/{}.t.sol'},
+\   'test/**/*.t.sol':{'alternate': 'src/**/{}.sol'},
+\    'src/*.sol':{'alternate': 'test/{}.t.sol'},
+\   'test/*.t.sol':{'alternate':'src/{}.sol'}
 \}
 \}
 ]]
@@ -202,8 +202,8 @@ local luasnip = require("luasnip")
         i = cmp.mapping.abort(),
         c = cmp.mapping.close(),
       }),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-          ["<Tab>"] = cmp.mapping(function(fallback)
+      ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ["<C-n>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then
@@ -215,19 +215,20 @@ local luasnip = require("luasnip")
       end
     end, { "i", "s" }),
 
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
+    ["<C-p>"] = cmp.mapping(function()
       if cmp.visible() then
         cmp.select_prev_item()
       elseif luasnip.jumpable(-1) then
         luasnip.jump(-1)
       else
-        fallback()
+        -- fallback()
       end
     end, { "i", "s" }),
-    },
+    }, 
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'luasnip' }, -- For luasnip users.
+      { name = 'copilot'},
     }, {
       { name = 'buffer' },
     })

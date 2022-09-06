@@ -19,7 +19,7 @@ require('packer').startup(function(use)
   use 'tpope/vim-fugitive'
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use {'numToStr/Comment.nvim'}
-  use {'windwp/nvim-autopairs'}
+  use 'm4xshen/autoclose.nvim'
   use 'neovim/nvim-lspconfig'
   use 'williamboman/nvim-lsp-installer'
   use 'hrsh7th/nvim-cmp'
@@ -32,7 +32,13 @@ require('packer').startup(function(use)
   use 'voldikss/vim-floaterm'
   use {"folke/which-key.nvim"}
   use {"folke/todo-comments.nvim", requires = "nvim-lua/plenary.nvim"}
-  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+  use {
+    'goolord/alpha-nvim',
+    requires = { 'kyazdani42/nvim-web-devicons' },
+    config = function ()
+        require'alpha'.setup(require'alpha.themes.startify'.config)
+    end
+}
 
   use 'github/copilot.vim'
   end
@@ -95,8 +101,6 @@ require('neoscroll').setup()
 vim.cmd [[
 autocmd BufWritePre * Prettier
 ]]
--- nvim-autopairs
-require('nvim-autopairs').setup{}
 --Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
@@ -113,6 +117,8 @@ vim.cmd[[colorscheme vscode]]
 -- Floatterm
 vim.cmd([[
 let g:floaterm_keymap_toggle= '<Leader>fo'
+let g:floaterm_width= 1.0
+let g:floaterm_height= 1.0
 ]])
 
 -- Lualine 

@@ -64,7 +64,7 @@ vim.o.updatetime = 1000
 vim.o.redrawtime = 1000
 vim.o.cursorline=true
 -- Highlight on yank
-vim.cmd('colorscheme base16-material')
+vim.cmd('colorscheme base16-onedark')
 vim.cmd [[
   augroup YankHighlight
     autocmd!

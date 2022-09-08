@@ -6,21 +6,19 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 end
 
 require('packer').startup(function(use)
-  use 'RRethy/nvim-base16'
   use 'wbthomason/packer.nvim' -- Package manager
-  use 'voldikss/vim-floaterm'
+  use 'neovim/nvim-lspconfig'
+  use 'RRethy/nvim-base16'
   use 'prettier/vim-prettier'
-  use {'numToStr/Comment.nvim'}
+  use 'numToStr/Comment.nvim'
   use 'tpope/vim-fugitive'
   use 'tpope/vim-projectionist'
-  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
-  use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
+  use { 'lewis6991/gitsigns.nvim', requires = 'nvim-lua/plenary.nvim' }
+  use { 'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim' }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-treesitter/nvim-treesitter'
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
-  use 'neovim/nvim-lspconfig'
-  use 'williamboman/nvim-lsp-installer'
   use 'hrsh7th/nvim-cmp'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
@@ -84,12 +82,6 @@ require('Comment').setup()
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
--- Floatterm
-vim.cmd([[
-let g:floaterm_keymap_toggle= '<Leader>fo'
-let g:floaterm_width= 1.0
-let g:floaterm_height= 1.0
-]])
 
 -- Lualine 
 require('lualine').setup {
@@ -165,12 +157,6 @@ require'lspconfig'.solidity_ls.setup{
     capabilities=capabilities,
     flags = {debounce_text_changes = 150},
     on_attach = function(client)
-        -- Keymaps
-        -- foundry
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>T', '<cmd>FloatermNew --autoclose=0 make test<CR>', {noremap=true})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>U', '<cmd>FloatermNew --autoclose=1 make users<CR>', {noremap=true})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>B', '<cmd>FloatermNew --autoclose=0 make build<CR>', {noremap=true})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>F', '<cmd>FloatermNew --autoclose=1 make prettier<CR>', {noremap=true})
         -- unsupported in lsp atm
         vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true})
         vim.api.nvim_buf_set_keymap(0, 'n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {noremap=true})

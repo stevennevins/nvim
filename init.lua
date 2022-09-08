@@ -6,20 +6,19 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 end
 
 require('packer').startup(function(use)
+  use 'RRethy/nvim-base16'
   use 'wbthomason/packer.nvim' -- Package manager
-  use 'karb94/neoscroll.nvim'
+  use 'voldikss/vim-floaterm'
   use 'prettier/vim-prettier'
+  use {'numToStr/Comment.nvim'}
+  use 'tpope/vim-fugitive'
   use 'tpope/vim-projectionist'
-  use 'Mofiqul/vscode.nvim'
+  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-treesitter/nvim-treesitter'
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
-  use 'tpope/vim-fugitive'
-  use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
-  use {'numToStr/Comment.nvim'}
-  use 'm4xshen/autoclose.nvim'
   use 'neovim/nvim-lspconfig'
   use 'williamboman/nvim-lsp-installer'
   use 'hrsh7th/nvim-cmp'
@@ -27,56 +26,45 @@ require('packer').startup(function(use)
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'
   use 'hrsh7th/cmp-copilot'
-  use 'L3MON4D3/LuaSnip'
-  use 'saadparwaiz1/cmp_luasnip'
-  use 'voldikss/vim-floaterm'
-  use {"folke/which-key.nvim"}
-  use {"folke/todo-comments.nvim", requires = "nvim-lua/plenary.nvim"}
-  use {
-    'goolord/alpha-nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' },
-    config = function ()
-        require'alpha'.setup(require'alpha.themes.startify'.config)
-    end
-}
-
+  use 'hrsh7th/cmp-vsnip'
+  use 'hrsh7th/vim-vsnip'
   use 'github/copilot.vim'
   end
   )
 
---jess archer settings                                                                                                                                                   
-vim.o.expandtab = true                                                                                                                                                   
-vim.o.shiftwidth = 4                                                                                                                                                     
-vim.o.tabstop = 4                                                                                                                                                        
-vim.o.signcolumn = 'yes:1'                                                                                                                                               
-vim.o.relativenumber = true                                                                                                                                              
-vim.o.number = true                                                                                                                                                      
-vim.o.termguicolors = true                                                                                                                                               
-vim.o.undofile = true                                                                                                                                                    
-vim.o.title = true                                                                                                                                                       
-vim.o.ignorecase = true                                                                                                                                                  
-vim.o.smartcase = true                                                                                                                                                   
-vim.o.wildmode = 'longest:full,full'                                                                                                                                     
-vim.o.wrap = false                                                                                                                                                       
-vim.o.list = true                                                                                                                                                        
-vim.o.listchars = 'tab:▸ ,trail:·'                                                                                                                                       
-vim.o.mouse = 'a'                                                                                                                                                        
-vim.o.splitright = true                                                                                                                                                  
-vim.o.splitbelow = true                                                                                                                                                  
-vim.o.scrolloff = 25                                                                                                                                                      
-vim.o.sidescrolloff = 10                                                                                                                                                  
-vim.o.clipboard = 'unnamedplus' -- Use Linux system clipboard                                                                                                            
-vim.o.confirm = true                                                                                                                                                     
-vim.o.backup = false                                                                                                                                                      
-vim.o.backupdir = vim.fn.stdpath 'data' .. '/backup//'                                                                                                                   
-vim.o.showmode = false                                                                                                                                                   
-vim.o.fillchars = 'eob: '                                                                                                                                              
-vim.o.hlsearch = false                                                                                                                                                   
-vim.o.breakindent = true                                                                                                                                                 
-vim.o.updatetime = 50  
-vim.o.redrawtime = 1000  
+vim.o.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.signcolumn = 'yes'
+vim.o.relativenumber = true
+vim.o.number = true
+vim.o.termguicolors = true
+vim.o.undofile = true
+vim.o.title = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.wildmode = 'longest:full,full'
+vim.o.wrap = false
+vim.o.list = true
+vim.o.listchars = 'tab:▸ ,trail:·'
+vim.o.mouse = 'a'
+vim.o.splitright = true
+vim.o.splitbelow = true
+vim.o.scrolloff = 25
+vim.o.sidescrolloff = 10
+vim.o.clipboard = 'unnamedplus'
+vim.o.confirm = true
+vim.o.backup = false
+vim.o.backupdir = vim.fn.stdpath 'data' .. '/backup//'
+vim.o.showmode = false
+vim.o.fillchars = 'eob: '
+vim.o.hlsearch = false
+vim.o.breakindent = true
+vim.o.updatetime = 1000
+vim.o.redrawtime = 1000
 vim.o.cursorline=true
 -- Highlight on yank
+vim.cmd('colorscheme base16-material')
 vim.cmd [[
   augroup YankHighlight
     autocmd!
@@ -84,36 +72,18 @@ vim.cmd [[
   augroup end
 ]]
 
--- comment
-require('Comment').setup()
-
--- todo-comments
-require("todo-comments").setup()
-
--- which-key
-require("which-key").setup()
-
--- neoscroll 
-
-require('neoscroll').setup()
-
 -- prettier on save
 vim.cmd [[
 autocmd BufWritePre * Prettier
 ]]
+
+-- comment
+require('Comment').setup()
+
 --Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
---Set colorscheme
-vim.g.vscode_style = "dark"
--- Enable transparent background.
-vim.g.vscode_transparent = 1
--- Enable italic comment
-vim.g.vscode_italic_comment = 1
--- Disable nvim-tree background color 
-vim.g.vscode_disable_nvimtree_bg = true 
-vim.cmd[[colorscheme vscode]]
 -- Floatterm
 vim.cmd([[
 let g:floaterm_keymap_toggle= '<Leader>fo'
@@ -124,7 +94,7 @@ let g:floaterm_height= 1.0
 -- Lualine 
 require('lualine').setup {
   options = {
-    theme = 'vscode',
+    theme="auto",
     component_separators = '',
     section_separators = '',
   },
@@ -136,16 +106,47 @@ require('bufferline').setup{}
 -- Gitsigns
 require('gitsigns').setup {
   signs = {
-    add = { text = '+' },
-    change = { text = '~' },
-    delete = { text = '_' },
-    topdelete = { text = '‾' },
-    changedelete = { text = '~' },
+    add          = {hl = 'GitSignsAdd'   , text = '│', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+    change       = {hl = 'GitSignsChange', text = '│', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+    delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+  },
+  signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+  numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+  linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+  word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+  watch_gitdir = {
+    interval = 1000,
+    follow_files = true
+  },
+  attach_to_untracked = true,
+  current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+  current_line_blame_opts = {
+    virt_text = true,
+    virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+    delay = 1000,
+    ignore_whitespace = false,
+  },
+  current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+  sign_priority = 6,
+  update_debounce = 100,
+  status_formatter = nil, -- Use default
+  max_file_length = 40000, -- Disable if file is longer than this (in lines)
+  preview_config = {
+    -- Options passed to nvim_open_win
+    border = 'single',
+    style = 'minimal',
+    relative = 'cursor',
+    row = 0,
+    col = 1
+  },
+  yadm = {
+    enable = false
   },
 }
 
 -- vim-projectionist
-
 vim.cmd[[
 let g:projectionist_heuristics = {
 \ '*':{
@@ -181,65 +182,42 @@ require'lspconfig'.solidity_ls.setup{
         -- supported in lsp
         vim.api.nvim_buf_set_keymap(0, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true})
     end,
-    -- cmd = {"solc-0.8.11", "--lsp"},
+}
+
+require'lspconfig'.sumneko_lua.setup {
+  settings = {
+    Lua = {
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = {'vim'},
+      },
+    },
+  },
 }
 -- Setup nvim-cmp.
 vim.opt.completeopt={"menu","menuone","noselect"}
-local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
-local luasnip = require("luasnip")
-  local cmp = require'cmp'
-
-  cmp.setup({
+local cmp = require('cmp')
+cmp.setup {
     snippet = {
       expand = function(args)
-        luasnip.lsp_expand(args.body) -- For `luasnip` users.
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
       end,
     },
-    mapping = {
-      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-      ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-      ['<C-e>'] = cmp.mapping({
-        i = cmp.mapping.abort(),
-        c = cmp.mapping.close(),
-      }),
-      ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    ["<C-n>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif has_words_before() then
-        cmp.complete()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-
-    ["<C-p>"] = cmp.mapping(function()
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        -- fallback()
-      end
-    end, { "i", "s" }),
-    }, 
+        mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-      { name = 'luasnip' }, -- For luasnip users.
+      { name = 'vsnip' },
       { name = 'copilot'},
     }, {
       { name = 'buffer' },
     })
-  })
-
+}
 -- Parsers must be installed manually via :TSInstall
 require('nvim-treesitter.configs').setup {
   highlight = {
@@ -247,7 +225,6 @@ require('nvim-treesitter.configs').setup {
   },
 }
 -- Telescope Setup
---
 local action_state = require('telescope.actions.state') -- runtime (Plugin) exists somewhere
 
 require('telescope').setup{
@@ -274,8 +251,8 @@ vim.api.nvim_set_keymap('n', '<leader>?', [[<cmd>lua require('telescope.builtin'
 local mappings = {}
 
 mappings.curr_buf = function()
-	local opt = require('telescope.themes').get_dropdown({height=10, previewer=false})
-	require('telescope.builtin').current_buffer_fuzzy_find(opt)
+    local opt = require('telescope.themes').get_dropdown({height=10, previewer=false})
+    require('telescope.builtin').current_buffer_fuzzy_find(opt)
 end
 return mappings
 

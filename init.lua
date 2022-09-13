@@ -18,6 +18,7 @@ require('packer').startup(function(use)
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-lualine/lualine.nvim' -- Fancier statusline
     use { 'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons' }
+    use { "jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim" }
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
@@ -26,7 +27,6 @@ require('packer').startup(function(use)
     use 'hrsh7th/cmp-vsnip'
     use 'hrsh7th/vim-vsnip'
     use 'github/copilot.vim'
-    use { "jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim" }
 end
 )
 
@@ -58,8 +58,8 @@ vim.o.showmode = false
 vim.o.fillchars = 'eob: '
 vim.o.hlsearch = false
 vim.o.breakindent = true
-vim.o.updatetime = 1000
-vim.o.redrawtime = 1000
+vim.o.updatetime = 50
+vim.o.redrawtime = 250
 vim.o.cursorline = true
 -- Highlight on yank
 vim.cmd('colorscheme base16-gruvbox-material-dark-hard')
@@ -150,7 +150,6 @@ let g:projectionist_heuristics = {
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 require 'lspconfig'.solidity_ls.setup {
     capabilities = capabilities,
-    flags = { debounce_text_changes = 150 },
     on_attach = function(client)
         -- unsupported in lsp atm
         vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', { noremap = true })
@@ -231,7 +230,7 @@ require("null-ls").setup({
         require("null-ls").builtins.diagnostics.solhint,
         require("null-ls").builtins.formatting.lua_format,
         require("null-ls").builtins.formatting.prettier.with({
-            filetypes = { "solidity" } 
+            filetypes = { "solidity" , "javascript"} 
         }),
     },
     -- you can reuse a shared lspconfig on_attach callback here

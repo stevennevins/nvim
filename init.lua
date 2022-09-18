@@ -12,6 +12,7 @@ require('packer').startup(function(use)
     use 'numToStr/Comment.nvim'
     use 'tpope/vim-fugitive'
     use 'tpope/vim-projectionist'
+    use 'folke/which-key.nvim'
     use { 'lewis6991/gitsigns.nvim', requires = 'nvim-lua/plenary.nvim' }
     use { 'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim' }
     use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
@@ -89,6 +90,9 @@ require('lualine').setup {
 
 -- bufferline
 require('bufferline').setup {}
+
+-- whichkey
+require('which-key').setup {}
 
 -- Gitsigns
 require('gitsigns').setup {
@@ -232,6 +236,7 @@ require("null-ls").setup({
         require("null-ls").builtins.formatting.prettier.with({
             filetypes = { "solidity" , "javascript"} 
         }),
+        require("null-ls").builtins.diagnostics.actionlint,
     },
     -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client, bufnr)

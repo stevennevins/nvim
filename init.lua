@@ -41,8 +41,6 @@ vim.o.signcolumn = 'yes'
 vim.o.relativenumber = true
 vim.o.number = true
 vim.o.termguicolors = true
-vim.o.undofile = true
-vim.o.title = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.wildmode = 'longest:full,full'
@@ -50,21 +48,11 @@ vim.o.wrap = false
 vim.o.list = true
 vim.o.listchars = 'tab:▸ ,trail:·'
 vim.o.mouse = 'a'
-vim.o.splitright = true
-vim.o.splitbelow = true
 vim.o.scrolloff = 25
-vim.o.sidescrolloff = 10
 vim.o.clipboard = 'unnamedplus'
 vim.o.confirm = true
 vim.o.backup = false
-vim.o.backupdir = vim.fn.stdpath 'data' .. '/backup//'
-vim.o.showmode = false
-vim.o.fillchars = 'eob: '
-vim.o.hlsearch = false
-vim.o.breakindent = true
-vim.o.updatetime = 50
-vim.o.redrawtime = 250
-vim.o.cursorline = true
+
 -- Highlight on yank
 vim.cmd('colorscheme base16-gruvbox-material-dark-hard')
 vim.cmd [[
@@ -74,13 +62,13 @@ vim.cmd [[
   augroup end
 ]]
 
--- comment
-require('Comment').setup()
-
 -- Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+
+-- comment
+require('Comment').setup()
 
 -- Lualine
 require('lualine').setup {

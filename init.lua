@@ -62,7 +62,7 @@ vim.g.maplocalleader = ' '
 
 -- Copilot
 require("copilot").setup {}
-require("copilot_cmp").setup {method = "getCompletionsCycling"}
+require("copilot_cmp").setup {}
 -- comment
 require('Comment').setup()
 

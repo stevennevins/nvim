@@ -20,15 +20,15 @@ require('packer').startup(function(use)
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-lualine/lualine.nvim'
     use {'kdheepak/tabline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
+    use 'zbirenbaum/copilot.lua'
+    use 'zbirenbaum/copilot-cmp'
     use {"jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim"}
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/cmp-path'
-    use 'hrsh7th/cmp-copilot'
     use 'hrsh7th/cmp-vsnip'
     use 'hrsh7th/vim-vsnip'
-    use 'github/copilot.vim'
 end)
 
 vim.o.relativenumber = true
@@ -60,6 +60,9 @@ vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Copilot
+require("copilot").setup {}
+require("copilot_cmp").setup {method = "getCompletionsCycling"}
 -- comment
 require('Comment').setup()
 

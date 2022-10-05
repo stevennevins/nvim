@@ -22,7 +22,7 @@ require('packer').startup(function(use)
     use 'nvim-treesitter/nvim-treesitter'
     use 'RRethy/vim-illuminate'
     use 'nvim-lualine/lualine.nvim' -- Fancier statusline
-    use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
+    use {'kdheepak/tabline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
     use {"jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim"}
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
@@ -91,8 +91,8 @@ require('lualine').setup {
     }
 }
 
--- bufferline
-require('bufferline').setup {}
+-- tabline setup
+require('tabline').setup {}
 
 -- whichkey
 require('which-key').setup {}

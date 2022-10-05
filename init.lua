@@ -15,13 +15,10 @@ require('packer').startup(function(use)
     use 'tpope/vim-fugitive'
     use 'tpope/vim-projectionist'
     use 'folke/which-key.nvim'
-    use {'samodostal/image.nvim', requires = 'nvim-lua/plenary.nvim'}
     use {'lewis6991/gitsigns.nvim', requires = 'nvim-lua/plenary.nvim'}
     use {'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim'}
-    use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'}
     use 'nvim-treesitter/nvim-treesitter'
-    use 'RRethy/vim-illuminate'
-    use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+    use 'nvim-lualine/lualine.nvim'
     use {'kdheepak/tabline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
     use {"jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim"}
     use 'hrsh7th/nvim-cmp'
@@ -34,10 +31,6 @@ require('packer').startup(function(use)
     use 'github/copilot.vim'
 end)
 
-vim.o.expandtab = true
-vim.o.shiftwidth = 4
-vim.o.tabstop = 4
-vim.o.signcolumn = 'yes'
 vim.o.relativenumber = true
 vim.o.number = true
 vim.o.termguicolors = true
@@ -160,10 +153,7 @@ let g:projectionist_heuristics = {
 \}
 ]]
 
--- Image setup
-require('image').setup {}
 -- Lsp setup
--- vim.cmd("au BufRead,BufNewFile *.sol setfiletype solidity");
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp
                                                                      .protocol
                                                                      .make_client_capabilities())
@@ -295,7 +285,6 @@ require('telescope').setup {
         }
     }
 }
-require('telescope').load_extension('fzf')
 vim.api.nvim_set_keymap('n', '<leader><space>',
                         [[<cmd>lua require('telescope.builtin').buffers()<CR>]],
                         {noremap = true, silent = true})

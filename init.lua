@@ -31,6 +31,9 @@ require('packer').startup(function(use)
     use 'hrsh7th/vim-vsnip'
 end)
 
+vim.o.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
 vim.o.relativenumber = true
 vim.o.number = true
 vim.o.termguicolors = true
@@ -160,7 +163,8 @@ let g:projectionist_heuristics = {
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp
                                                                      .protocol
                                                                      .make_client_capabilities())
-require'lspconfig'.solidity_ls.setup {
+-- require'lspconfig'.solidity_ls.setup {
+require'lspconfig'.solidity.setup {
     capabilities = capabilities,
     on_attach = function(client)
         -- unsupported in lsp atm

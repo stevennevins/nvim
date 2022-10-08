@@ -84,11 +84,6 @@ _G.packer_plugins = {
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/cmp-buffer",
     url = "https://github.com/hrsh7th/cmp-buffer"
   },
-  ["cmp-copilot"] = {
-    loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/cmp-copilot",
-    url = "https://github.com/hrsh7th/cmp-copilot"
-  },
   ["cmp-nvim-lsp"] = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
@@ -104,20 +99,20 @@ _G.packer_plugins = {
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/cmp-vsnip",
     url = "https://github.com/hrsh7th/cmp-vsnip"
   },
-  ["copilot.vim"] = {
+  ["copilot-cmp"] = {
     loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/copilot.vim",
-    url = "https://github.com/github/copilot.vim"
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/copilot-cmp",
+    url = "https://github.com/zbirenbaum/copilot-cmp"
+  },
+  ["copilot.lua"] = {
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/copilot.lua",
+    url = "https://github.com/zbirenbaum/copilot.lua"
   },
   ["gitsigns.nvim"] = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/gitsigns.nvim",
     url = "https://github.com/lewis6991/gitsigns.nvim"
-  },
-  ["image.nvim"] = {
-    loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/image.nvim",
-    url = "https://github.com/samodostal/image.nvim"
   },
   ["lualine.nvim"] = {
     loaded = true,
@@ -150,9 +145,8 @@ _G.packer_plugins = {
     url = "https://github.com/nvim-treesitter/nvim-treesitter"
   },
   ["nvim-web-devicons"] = {
-    loaded = false,
-    needs_bufread = false,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/opt/nvim-web-devicons",
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/nvim-web-devicons",
     url = "https://github.com/kyazdani42/nvim-web-devicons"
   },
   ["packer.nvim"] = {
@@ -170,11 +164,6 @@ _G.packer_plugins = {
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/tabline.nvim",
     url = "https://github.com/kdheepak/tabline.nvim"
   },
-  ["telescope-fzf-native.nvim"] = {
-    loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/telescope-fzf-native.nvim",
-    url = "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
-  },
   ["telescope.nvim"] = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/telescope.nvim",
@@ -184,11 +173,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/vim-fugitive",
     url = "https://github.com/tpope/vim-fugitive"
-  },
-  ["vim-illuminate"] = {
-    loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/vim-illuminate",
-    url = "https://github.com/RRethy/vim-illuminate"
   },
   ["vim-projectionist"] = {
     loaded = true,

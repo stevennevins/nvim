@@ -12,6 +12,7 @@ require('packer').startup(function(use)
     use 'neovim/nvim-lspconfig'
     use 'RRethy/nvim-base16'
     use 'numToStr/Comment.nvim'
+    use 'karb94/neoscroll.nvim'
     use 'tpope/vim-fugitive'
     use 'tpope/vim-projectionist'
     use 'folke/which-key.nvim'
@@ -46,6 +47,7 @@ vim.o.listchars = 'tab:▸ ,trail:·'
 vim.o.mouse = 'a'
 vim.o.scrolloff = 25
 vim.o.clipboard = 'unnamedplus'
+vim.o.undofile = true -- persistent undo
 vim.o.confirm = true
 vim.o.backup = false
 
@@ -68,6 +70,8 @@ require("copilot").setup {}
 require("copilot_cmp").setup {}
 -- comment
 require('Comment').setup()
+-- neoscroll
+require('neoscroll').setup()
 
 -- Lualine
 require('lualine').setup {
@@ -261,7 +265,7 @@ require("null-ls").setup({
     sources = {
         require("null-ls").builtins.diagnostics.solhint,
         require("null-ls").builtins.formatting.lua_format,
-        require("null-ls").builtins.formatting.prettier.with({
+        require("null-ls").builtins.formatting.prettierd.with({
             filetypes = {"solidity", "javascript"}
         }), require("null-ls").builtins.diagnostics.actionlint
     },

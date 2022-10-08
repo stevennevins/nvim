@@ -267,7 +267,7 @@ require("null-ls").setup({
         require("null-ls").builtins.formatting.lua_format,
         require("null-ls").builtins.formatting.prettierd.with({
             filetypes = {"solidity", "javascript"}
-        }), require("null-ls").builtins.diagnostics.actionlint
+        })
     },
     -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client, bufnr)

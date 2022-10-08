@@ -2,30 +2,45 @@
 
 nvim 0.8.0 compatible
 
+```
 brew install neovim
 brew install solc-select
--- i had to manually install python3.9 for solc-select, unlink, and relink ymmv
-
+brew install luarocks
+```
 copy contents of init.lua into $HOME/.config/nvim/init.lua
 
-I used bun for the js dependencies
-
+install bun
+```
 curl https://bun.sh/install | bash
+```
 
-bun install -g prettierd
+solidity stuff for lsp, diagnostics, and formatting
+
+```
 bun install -g solidity-ls
+bun install -g prettierd
 bun install -g solhint
+```
 
-brew install luarocks
-
+lua formatter
+```
 luarocks install --server=https://luarocks.org/dev luaformatter
+```
 
+open neovim
+```
 nvim
+```
 
+install plugins
+```
 :PackerInstall
+```
 
-TSInstall solidity
-TSInstall lua
+install language specific syntax highlighting
+```
+:TSInstall solidity
+:TSInstall lua
 ...
-TSInstall any other languages you need
-
+:TSInstall any other languages you need
+```

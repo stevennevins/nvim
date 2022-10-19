@@ -127,6 +127,8 @@ require'lspconfig'.solidity.setup {
     end
 }
 
+require'lspconfig'.pyright.setup {}
+
 -- Setup nvim-cmp.
 vim.opt.completeopt = {"menu", "menuone", "noselect"}
 local has_words_before = function()
@@ -193,7 +195,7 @@ require("null-ls").setup({
         require("null-ls").builtins.diagnostics.solhint,
         require("null-ls").builtins.formatting.lua_format,
         require("null-ls").builtins.formatting.prettierd.with({
-            filetypes = {"solidity", "javascript", "json"}
+            filetypes = {"solidity", "python", "javascript", "json"}
         })
     },
     -- you can reuse a shared lspconfig on_attach callback here

@@ -1,29 +1,21 @@
--- Install packer
-local install_path = vim.fn.stdpath 'data' ..
-                         '/site/pack/packer/start/packer.nvim'
-
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    vim.fn.execute('!git clone https://github.com/wbthomason/packer.nvim ' ..
-                       install_path)
-end
-
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim' -- Package manager
-    use 'neovim/nvim-lspconfig'
     use 'RRethy/nvim-base16'
-    use 'numToStr/Comment.nvim'
-    use 'karb94/neoscroll.nvim'
+    use 'nvim-lua/plenary.nvim'
+    use 'kyazdani42/nvim-web-devicons'
+    use 'nvim-lualine/lualine.nvim'
+    use 'kdheepak/tabline.nvim'
+    use 'lewis6991/gitsigns.nvim'
+    use 'nvim-treesitter/nvim-treesitter'
+    use 'nvim-telescope/telescope.nvim'
     use 'tpope/vim-fugitive'
+    use 'numToStr/Comment.nvim'
     use 'tpope/vim-projectionist'
     use 'folke/which-key.nvim'
-    use {'lewis6991/gitsigns.nvim', requires = 'nvim-lua/plenary.nvim'}
-    use {'nvim-telescope/telescope.nvim', requires = 'nvim-lua/plenary.nvim'}
-    use 'nvim-treesitter/nvim-treesitter'
-    use 'nvim-lualine/lualine.nvim'
-    use {'kdheepak/tabline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
     use 'zbirenbaum/copilot.lua'
     use 'zbirenbaum/copilot-cmp'
-    use {"jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim"}
+    use "jose-elias-alvarez/null-ls.nvim"
+    use 'neovim/nvim-lspconfig'
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
@@ -52,7 +44,7 @@ vim.o.confirm = true
 vim.o.backup = false
 
 -- Highlight on yank
-vim.cmd('colorscheme base16-gruvbox-material-dark-hard')
+vim.cmd('colorscheme base16-gruvbox-material-dark-medium')
 vim.cmd [[
   augroup YankHighlight
     autocmd!
@@ -70,8 +62,6 @@ require("copilot").setup {}
 require("copilot_cmp").setup {}
 -- comment
 require('Comment').setup()
--- neoscroll
-require('neoscroll').setup()
 
 -- Lualine
 require('lualine').setup {
@@ -89,67 +79,7 @@ require('tabline').setup {}
 require('which-key').setup {}
 
 -- Gitsigns
-require('gitsigns').setup {
-    signs = {
-        add = {
-            hl = 'GitSignsAdd',
-            text = '│',
-            numhl = 'GitSignsAddNr',
-            linehl = 'GitSignsAddLn'
-        },
-        change = {
-            hl = 'GitSignsChange',
-            text = '│',
-            numhl = 'GitSignsChangeNr',
-            linehl = 'GitSignsChangeLn'
-        },
-        delete = {
-            hl = 'GitSignsDelete',
-            text = '_',
-            numhl = 'GitSignsDeleteNr',
-            linehl = 'GitSignsDeleteLn'
-        },
-        topdelete = {
-            hl = 'GitSignsDelete',
-            text = '‾',
-            numhl = 'GitSignsDeleteNr',
-            linehl = 'GitSignsDeleteLn'
-        },
-        changedelete = {
-            hl = 'GitSignsChange',
-            text = '~',
-            numhl = 'GitSignsChangeNr',
-            linehl = 'GitSignsChangeLn'
-        }
-    },
-    signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-    numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
-    linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
-    word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
-    watch_gitdir = {interval = 1000, follow_files = true},
-    attach_to_untracked = true,
-    current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
-    current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-        delay = 1000,
-        ignore_whitespace = false
-    },
-    current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
-    sign_priority = 6,
-    update_debounce = 100,
-    status_formatter = nil, -- Use default
-    max_file_length = 40000, -- Disable if file is longer than this (in lines)
-    preview_config = {
-        -- Options passed to nvim_open_win
-        border = 'single',
-        style = 'minimal',
-        relative = 'cursor',
-        row = 0,
-        col = 1
-    },
-    yadm = {enable = false}
-}
+require('gitsigns').setup {}
 
 -- vim-projectionist
 vim.cmd [[
@@ -164,12 +94,9 @@ let g:projectionist_heuristics = {
 ]]
 
 -- Lsp setup
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp
-                                                                     .protocol
-                                                                     .make_client_capabilities())
--- require'lspconfig'.solidity_ls.setup {
 require'lspconfig'.solidity.setup {
-    capabilities = capabilities,
+    capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol
+                                                                    .make_client_capabilities()),
     on_attach = function(client)
         -- unsupported in lsp atm
         vim.api.nvim_buf_set_keymap(0, 'n', 'K',
@@ -266,7 +193,7 @@ require("null-ls").setup({
         require("null-ls").builtins.diagnostics.solhint,
         require("null-ls").builtins.formatting.lua_format,
         require("null-ls").builtins.formatting.prettierd.with({
-            filetypes = {"solidity", "javascript"}
+            filetypes = {"solidity", "javascript", "json"}
         })
     },
     -- you can reuse a shared lspconfig on_attach callback here

@@ -8,6 +8,7 @@ require('packer').startup(function(use)
     use 'lewis6991/gitsigns.nvim'
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-telescope/telescope.nvim'
+    use 'olacin/telescope-gitmoji.nvim'
     use 'tpope/vim-fugitive'
     use 'numToStr/Comment.nvim'
     use 'tpope/vim-projectionist'
@@ -44,7 +45,7 @@ vim.o.confirm = true
 vim.o.backup = false
 
 -- Highlight on yank
-vim.cmd('colorscheme base16-gruvbox-material-dark-medium')
+vim.cmd('colorscheme base16-gruvbox-dark-medium')
 vim.cmd [[
   augroup YankHighlight
     autocmd!
@@ -189,6 +190,19 @@ require('nvim-treesitter.configs').setup {
     }
 }
 
+local parser_config = require"nvim-treesitter.parsers".get_parser_configs()
+parser_config.sol = {
+    install_info = {
+        url = "https://github.com/JoranHonig/tree-sitter-solidity", -- local path or git repo
+        files = {"src/parser.c"},
+        -- optional entries:
+        branch = "master", -- default branch in case of git repo if different from master
+        generate_requires_npm = true, -- if stand-alone parser without npm dependencies
+        requires_generate_from_grammar = false -- if folder contains pre-generated src/parser.c
+    },
+    filetype = "sol" -- if filetype does not match the parser name
+}
+
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
     sources = {
@@ -225,6 +239,11 @@ require('telescope').setup {
         }
     }
 }
+
+require('telescope').load_extension("gitmoji")
+vim.api.nvim_set_keymap('n', '<leader>c',
+                        [[<cmd>lua require('telescope').extensions.gitmoji.gitmoji()<CR>]],
+                        {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader><space>',
                         [[<cmd>lua require('telescope.builtin').buffers()<CR>]],
                         {noremap = true, silent = true})

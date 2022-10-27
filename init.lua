@@ -9,7 +9,8 @@ require('packer').startup(function(use)
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-telescope/telescope.nvim'
     use 'olacin/telescope-gitmoji.nvim'
-    use 'tpope/vim-fugitive'
+    use 'pwntester/octo.nvim'
+    use 'petertriho/cmp-git'
     use 'numToStr/Comment.nvim'
     use 'tpope/vim-projectionist'
     use 'folke/which-key.nvim'
@@ -58,6 +59,7 @@ vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+require('octo').setup()
 -- Copilot
 require("copilot").setup {}
 require("copilot_cmp").setup {}
@@ -180,9 +182,11 @@ cmp.setup {
     }),
     sources = cmp.config.sources({
         {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"},
-        {name = 'copilot'}
+        {name = 'copilot'}, {name = 'git'}
     }, {{name = 'buffer'}})
 }
+-- setup git completion
+require("cmp_git").setup()
 -- Parsers must be installed manually via :TSInstall
 require('nvim-treesitter.configs').setup {
     highlight = {

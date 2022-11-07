@@ -1,6 +1,10 @@
 require('packer').startup(function(use)
-    use 'wbthomason/packer.nvim' -- Package manager
-    use 'RRethy/nvim-base16'
+    use 'wbthomason/packer.nvim'
+    use 'lewis6991/impatient.nvim'
+    use "samjwill/nvim-unception"
+    use 'numToStr/Comment.nvim'
+    use 'folke/which-key.nvim'
+    use "catppuccin/nvim"
     use 'nvim-lua/plenary.nvim'
     use 'kyazdani42/nvim-web-devicons'
     use 'nvim-lualine/lualine.nvim'
@@ -9,11 +13,7 @@ require('packer').startup(function(use)
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-telescope/telescope.nvim'
     use 'olacin/telescope-gitmoji.nvim'
-    use 'pwntester/octo.nvim'
     use 'petertriho/cmp-git'
-    use 'numToStr/Comment.nvim'
-    use 'tpope/vim-projectionist'
-    use 'folke/which-key.nvim'
     use 'zbirenbaum/copilot.lua'
     use 'zbirenbaum/copilot-cmp'
     use "jose-elias-alvarez/null-ls.nvim"
@@ -25,6 +25,8 @@ require('packer').startup(function(use)
     use 'hrsh7th/cmp-vsnip'
     use 'hrsh7th/vim-vsnip'
 end)
+
+require("impatient")
 
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
@@ -45,8 +47,16 @@ vim.o.undofile = true -- persistent undo
 vim.o.confirm = true
 vim.o.backup = false
 
+-- Remap space as leader key
+vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
+vim.api.nvim_set_keymap('n', ']b', [[<cmd>:bnext<CR>]], {})
+vim.api.nvim_set_keymap('n', '[b', [[<cmd>:bprevious<CR>]], {})
+vim.api.nvim_set_keymap('n', '<C-b>', [[<cmd>:blast<CR>]], {})
+
 -- Highlight on yank
-vim.cmd('colorscheme base16-gruvbox-dark-medium')
 vim.cmd [[
   augroup YankHighlight
     autocmd!
@@ -54,12 +64,10 @@ vim.cmd [[
   augroup end
 ]]
 
--- Remap space as leader key
-vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+require("catppuccin").setup {flavour = "mocha"}
 
-require('octo').setup()
+vim.cmd('colorscheme catppuccin')
+
 -- Copilot
 require("copilot").setup {}
 require("copilot_cmp").setup {}
@@ -124,18 +132,6 @@ require('gitsigns').setup {
     end
 }
 
--- vim-projectionist
-vim.cmd [[
-let g:projectionist_heuristics = {
-\ '*':{
-\    'src/**/*.sol':{'alternate': 'test/**/{}.t.sol'},
-\   'test/**/*.t.sol':{'alternate': 'src/**/{}.sol'},
-\    'src/*.sol':{'alternate': 'test/{}.t.sol'},
-\   'test/*.t.sol':{'alternate':'src/{}.sol'}
-\}
-\}
-]]
-
 -- Lsp setup
 require'lspconfig'.solidity.setup {
     capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol
@@ -171,6 +167,8 @@ require'lspconfig'.solidity.setup {
 }
 
 require'lspconfig'.pyright.setup {}
+require'lspconfig'.gopls.setup {}
+require'lspconfig'.rust_analyzer.setup {}
 
 -- Setup nvim-cmp.
 vim.opt.completeopt = {"menu", "menuone", "noselect"}
@@ -230,21 +228,9 @@ require("cmp_git").setup()
 -- Parsers must be installed manually via :TSInstall
 require('nvim-treesitter.configs').setup {
     highlight = {
-        enable = true -- false will disable the whole extension
+        enable = true, -- false will disable the whole extension
+        additional_vim_regex_highlighting = false
     }
-}
-
-local parser_config = require"nvim-treesitter.parsers".get_parser_configs()
-parser_config.sol = {
-    install_info = {
-        url = "https://github.com/JoranHonig/tree-sitter-solidity", -- local path or git repo
-        files = {"src/parser.c"},
-        -- optional entries:
-        branch = "master", -- default branch in case of git repo if different from master
-        generate_requires_npm = true, -- if stand-alone parser without npm dependencies
-        requires_generate_from_grammar = false -- if folder contains pre-generated src/parser.c
-    },
-    filetype = "sol" -- if filetype does not match the parser name
 }
 
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
@@ -252,8 +238,11 @@ require("null-ls").setup({
     sources = {
         require("null-ls").builtins.diagnostics.solhint,
         require("null-ls").builtins.formatting.lua_format,
+        require("null-ls").builtins.formatting.gofumpt,
+        require("null-ls").builtins.formatting.rustfmt,
+        require("null-ls").builtins.diagnostics.golangci_lint,
         require("null-ls").builtins.formatting.prettierd.with({
-            filetypes = {"solidity", "python", "javascript", "json"}
+            filetypes = {"solidity", "python", "javascript", "json", "md"}
         })
     },
     -- you can reuse a shared lspconfig on_attach callback here
@@ -268,31 +257,17 @@ require("null-ls").setup({
         end
     end
 })
--- Telescope Setup
-local action_state = require('telescope.actions.state') -- runtime (Plugin) exists somewhere
 
-require('telescope').setup {
-    defaults = {
-        prompt_prefix = "$ ",
-        mappings = {
-            i = {
-                ["<c-a>"] = function()
-                    print(vim.inspect(action_state.get_selected_entry()))
-                end
-            }
-        }
-    }
-}
-
+require('telescope').setup {}
 require('telescope').load_extension("gitmoji")
 vim.api.nvim_set_keymap('n', '<leader>c',
-                        [[<cmd>lua require('telescope').extensions.gitmoji.gitmoji()<CR>]],
+                        [[<cmd>lua require('gitmoji').gitmoji()<CR>]],
                         {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader><space>',
+vim.api.nvim_set_keymap('n', '<leader>b',
                         [[<cmd>lua require('telescope.builtin').buffers()<CR>]],
                         {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>f',
-                        [[<cmd>lua require('telescope.builtin').find_files({previewer = false})<CR>]],
+                        [[<cmd>lua require('telescope.builtin').git_files()<CR>]],
                         {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>ff',
                         [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]],
@@ -315,14 +290,6 @@ vim.api.nvim_set_keymap('n', '<leader>ftt',
 vim.api.nvim_set_keymap('n', '<leader>?',
                         [[<cmd>lua require('telescope.builtin').oldfiles()<CR>]],
                         {noremap = true, silent = true})
-
-local mappings = {}
-
-mappings.curr_buf = function()
-    local opt = require('telescope.themes').get_dropdown({
-        height = 10,
-        previewer = false
-    })
-    require('telescope.builtin').current_buffer_fuzzy_find(opt)
-end
-return mappings
+vim.api.nvim_set_keymap('n', '<leader>ts',
+                        [[<cmd>lua require('telescope.builtin').treesitter()<CR>]],
+                        {noremap = true, silent = true})

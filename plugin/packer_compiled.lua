@@ -84,6 +84,11 @@ _G.packer_plugins = {
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/cmp-buffer",
     url = "https://github.com/hrsh7th/cmp-buffer"
   },
+  ["cmp-git"] = {
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/cmp-git",
+    url = "https://github.com/petertriho/cmp-git"
+  },
   ["cmp-nvim-lsp"] = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
@@ -114,6 +119,11 @@ _G.packer_plugins = {
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/gitsigns.nvim",
     url = "https://github.com/lewis6991/gitsigns.nvim"
   },
+  ["impatient.nvim"] = {
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/impatient.nvim",
+    url = "https://github.com/lewis6991/impatient.nvim"
+  },
   ["lualine.nvim"] = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/lualine.nvim",
@@ -124,10 +134,10 @@ _G.packer_plugins = {
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
     url = "https://github.com/jose-elias-alvarez/null-ls.nvim"
   },
-  ["nvim-base16"] = {
+  nvim = {
     loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/nvim-base16",
-    url = "https://github.com/RRethy/nvim-base16"
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/nvim",
+    url = "https://github.com/catppuccin/nvim"
   },
   ["nvim-cmp"] = {
     loaded = true,
@@ -143,6 +153,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/nvim-treesitter",
     url = "https://github.com/nvim-treesitter/nvim-treesitter"
+  },
+  ["nvim-unception"] = {
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/nvim-unception",
+    url = "https://github.com/samjwill/nvim-unception"
   },
   ["nvim-web-devicons"] = {
     loaded = true,
@@ -168,16 +183,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
-  },
-  ["vim-fugitive"] = {
-    loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/vim-fugitive",
-    url = "https://github.com/tpope/vim-fugitive"
-  },
-  ["vim-projectionist"] = {
-    loaded = true,
-    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/vim-projectionist",
-    url = "https://github.com/tpope/vim-projectionist"
   },
   ["vim-vsnip"] = {
     loaded = true,

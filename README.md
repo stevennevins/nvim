@@ -7,19 +7,16 @@ brew install neovim
 brew install solc-select
 brew install luarocks
 brew install fsouza/prettierd/prettierd
+brew install ripgrep
+brew install fd
 ```
 copy contents of init.lua into $HOME/.config/nvim/init.lua
-
-install bun
-```
-curl https://bun.sh/install | bash
-```
 
 solidity stuff for lsp
 
 ```
-bun install -g solidity-ls
-bun install -g solhint
+npm install -g solidity-ls
+npm install -g solhint
 ```
 
 lua formatter

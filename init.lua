@@ -3,6 +3,7 @@ require('packer').startup(function(use)
     use 'lewis6991/impatient.nvim'
     use "samjwill/nvim-unception"
     use 'numToStr/Comment.nvim'
+    use 'kylechui/nvim-surround'
     use 'folke/which-key.nvim'
     use "catppuccin/nvim"
     use 'nvim-lua/plenary.nvim'
@@ -11,8 +12,8 @@ require('packer').startup(function(use)
     use 'kdheepak/tabline.nvim'
     use 'lewis6991/gitsigns.nvim'
     use 'nvim-treesitter/nvim-treesitter'
+    use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'}
     use 'nvim-telescope/telescope.nvim'
-    use 'olacin/telescope-gitmoji.nvim'
     use 'petertriho/cmp-git'
     use 'zbirenbaum/copilot.lua'
     use 'zbirenbaum/copilot-cmp'
@@ -52,9 +53,16 @@ vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-vim.api.nvim_set_keymap('n', ']b', [[<cmd>:bnext<CR>]], {})
-vim.api.nvim_set_keymap('n', '[b', [[<cmd>:bprevious<CR>]], {})
-vim.api.nvim_set_keymap('n', '<C-b>', [[<cmd>:blast<CR>]], {})
+local function map(mode, l, r, opts)
+    opts = opts or {}
+    opts.buffer = bufnr
+    vim.keymap.set(mode, l, r, opts)
+end
+
+vim.api.nvim_set_keymap('n', ']b', '<cmd>:bnext<CR>', {})
+vim.api.nvim_set_keymap('n', '[b', '<cmd>:bprevious<CR>', {})
+vim.api.nvim_set_keymap('n', ']B', '<cmd>:blast<CR>', {})
+vim.api.nvim_set_keymap('n', '[B', '<cmd>:bfirst<CR>', {})
 
 -- Highlight on yank
 vim.cmd [[
@@ -73,6 +81,8 @@ require("copilot").setup {}
 require("copilot_cmp").setup {}
 -- comment
 require('Comment').setup()
+
+require('nvim-surround').setup()
 
 -- Lualine
 require('lualine').setup {
@@ -94,12 +104,6 @@ require('gitsigns').setup {
     on_attach = function(bufnr)
         local gs = package.loaded.gitsigns
 
-        local function map(mode, l, r, opts)
-            opts = opts or {}
-            opts.buffer = bufnr
-            vim.keymap.set(mode, l, r, opts)
-        end
-
         -- Navigation
         map('n', ']c', function()
             if vim.wo.diff then return ']c' end
@@ -114,8 +118,8 @@ require('gitsigns').setup {
         end, {expr = true})
 
         -- Actions
-        map({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>')
-        map({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>')
+        map({'n', 'v'}, '<leader>hs', gs.stage_hunk)
+        map({'n', 'v'}, '<leader>hr', gs.reset_hunk)
         map({'n', 'v'}, '<leader>gp', ':term git push<CR> :bd<CR>')
         map('n', '<leader>hS', gs.stage_buffer)
         map('n', '<leader>hu', gs.undo_stage_hunk)
@@ -134,35 +138,11 @@ require('gitsigns').setup {
 
 -- Lsp setup
 require'lspconfig'.solidity.setup {
-    capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol
-                                                                    .make_client_capabilities()),
     on_attach = function(client)
-        -- unsupported in lsp atm
-        vim.api.nvim_buf_set_keymap(0, 'n', 'K',
-                                    '<cmd>lua vim.lsp.buf.hover()<CR>',
-                                    {noremap = true})
-        vim.api.nvim_buf_set_keymap(0, 'n', 'gT',
-                                    '<cmd>lua vim.lsp.buf.type_definition()<CR>',
-                                    {noremap = true})
-        vim.api.nvim_buf_set_keymap(0, 'n', 'gi',
-                                    '<cmd>lua vim.lsp.buf.implementation()<CR>',
-                                    {noremap = true})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dn',
-                                    '<cmd>lua vim.diagnostic.goto_next<CR>',
-                                    {noremap = true})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dp',
-                                    '<cmd>lua vim.diagnostic.goto_prev<CR>',
-                                    {noremap = true})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>dl',
-                                    '<cmd>Telescope diagnostics<CR>',
-                                    {noremap = true})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>r',
-                                    '<cmd>lua vim.lsp.buf.rename()<CR>',
-                                    {noremap = true})
-        -- supported in lsp
-        vim.api.nvim_buf_set_keymap(0, 'n', 'gd',
-                                    '<cmd>lua vim.lsp.buf.definition()<CR>',
-                                    {noremap = true})
+        map('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+        map('n', '<leader>gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+        map('n', '[d', '<cmd> lua vim.diagnostic.goto_next()<CR>')
+        map('n', ']d', '<cmd> lua vim.diagnostic.goto_prev()<CR>')
     end
 }
 
@@ -258,38 +238,25 @@ require("null-ls").setup({
     end
 })
 
-require('telescope').setup {}
-require('telescope').load_extension("gitmoji")
-vim.api.nvim_set_keymap('n', '<leader>c',
-                        [[<cmd>lua require('gitmoji').gitmoji()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>b',
-                        [[<cmd>lua require('telescope.builtin').buffers()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>f',
-                        [[<cmd>lua require('telescope.builtin').git_files()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ff',
-                        [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>fh',
-                        [[<cmd>lua require('telescope.builtin').help_tags()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ft',
-                        [[<cmd>lua require('telescope.builtin').tags()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>fs',
-                        [[<cmd>lua require('telescope.builtin').grep_string()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>fg',
-                        [[<cmd>lua require('telescope.builtin').live_grep()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ftt',
-                        [[<cmd>lua require('telescope.builtin').tags{ only_current_buffer = true }<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>?',
-                        [[<cmd>lua require('telescope.builtin').oldfiles()<CR>]],
-                        {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ts',
-                        [[<cmd>lua require('telescope.builtin').treesitter()<CR>]],
-                        {noremap = true, silent = true})
+local telescope = require("telescope")
+local telescopeConfig = require("telescope.config")
+local builtin = require('telescope.builtin')
+-- Clone the default Telescope configuration
+local vimgrep_arguments = {unpack(telescopeConfig.values.vimgrep_arguments)}
+
+-- I don't want to search in the `.git` directory.
+table.insert(vimgrep_arguments, "--glob")
+table.insert(vimgrep_arguments, "!.git/*")
+table.insert(vimgrep_arguments, "--glob")
+table.insert(vimgrep_arguments, "!node_modules/*")
+table.insert(vimgrep_arguments, "--glob")
+table.insert(vimgrep_arguments, "!lib/*")
+
+require('telescope').setup {defaults = {vimgrep_arguments = vimgrep_arguments}}
+require('telescope').load_extension('fzf')
+map('n', '<leader>d', builtin.diagnostics)
+map('n', '<leader>rf', builtin.lsp_references)
+map('n', '<leader>b', builtin.buffers)
+map('n', '<leader>f', builtin.git_files)
+map('n', '<leader>g', builtin.live_grep)
+map('n', '<leader>p', builtin.resume)

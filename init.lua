@@ -2,6 +2,7 @@ require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'lewis6991/impatient.nvim'
     use "samjwill/nvim-unception"
+    use 'prichrd/netrw.nvim'
     use 'numToStr/Comment.nvim'
     use 'kylechui/nvim-surround'
     use 'folke/which-key.nvim'
@@ -32,7 +33,6 @@ require("impatient")
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
-vim.o.relativenumber = true
 vim.o.number = true
 vim.o.termguicolors = true
 vim.o.ignorecase = true
@@ -47,6 +47,7 @@ vim.o.clipboard = 'unnamedplus'
 vim.o.undofile = true -- persistent undo
 vim.o.confirm = true
 vim.o.backup = false
+vim.o.updatetime = 300
 
 -- Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
@@ -59,10 +60,18 @@ local function map(mode, l, r, opts)
     vim.keymap.set(mode, l, r, opts)
 end
 
-vim.api.nvim_set_keymap('n', ']b', '<cmd>:bnext<CR>', {})
-vim.api.nvim_set_keymap('n', '[b', '<cmd>:bprevious<CR>', {})
-vim.api.nvim_set_keymap('n', ']B', '<cmd>:blast<CR>', {})
-vim.api.nvim_set_keymap('n', '[B', '<cmd>:bfirst<CR>', {})
+-- Move around open buffers
+map('n', ']b', '<cmd>:bnext<CR>')
+map('n', '[b', '<cmd>:bprevious<CR>')
+map('n', ']B', '<cmd>:blast<CR>')
+map('n', '[B', '<cmd>:bfirst<CR>')
+-- Move around splits using Ctrl + {h,j,k,l}
+map('n', '<C-h>', '<C-w>h')
+map('n', '<C-j>', '<C-w>j')
+map('n', '<C-k>', '<C-w>k')
+map('n', '<C-l>', '<C-w>l')
+-- Terminal mappings
+map('t', '<C-[>', '<C-\\><C-n>') -- exit
 
 -- Highlight on yank
 vim.cmd [[
@@ -75,7 +84,10 @@ vim.cmd [[
 require("catppuccin").setup {flavour = "mocha"}
 
 vim.cmd('colorscheme catppuccin')
+vim.diagnostic.config({virtual_text = false, update_in_insert = true})
+map('n', '<leader>d', vim.diagnostic.open_float)
 
+require'netrw'.setup {}
 -- Copilot
 require("copilot").setup {}
 require("copilot_cmp").setup {}
@@ -139,10 +151,11 @@ require('gitsigns').setup {
 -- Lsp setup
 require'lspconfig'.solidity.setup {
     on_attach = function(client)
-        map('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-        map('n', '<leader>gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-        map('n', '[d', '<cmd> lua vim.diagnostic.goto_next()<CR>')
-        map('n', ']d', '<cmd> lua vim.diagnostic.goto_prev()<CR>')
+        map('n', 'rn', vim.lsp.buf.rename)
+        map('n', 'gd', vim.lsp.buf.definition)
+        map('n', '<leader>k', vim.lsp.buf.hover)
+        map('n', '[d', vim.diagnostic.goto_next)
+        map('n', ']d', vim.diagnostic.goto_prev)
     end
 }
 
@@ -151,7 +164,7 @@ require'lspconfig'.gopls.setup {}
 require'lspconfig'.rust_analyzer.setup {}
 
 -- Setup nvim-cmp.
-vim.opt.completeopt = {"menu", "menuone", "noselect"}
+vim.opt.completeopt = {"menuone", "noselect"}
 local has_words_before = function()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0 and
@@ -244,17 +257,23 @@ local builtin = require('telescope.builtin')
 -- Clone the default Telescope configuration
 local vimgrep_arguments = {unpack(telescopeConfig.values.vimgrep_arguments)}
 
--- I don't want to search in the `.git` directory.
+-- I don't want to search in the `.git`, 'node_modules', or 'lib' directories.
 table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!.git/*")
 table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!node_modules/*")
 table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!lib/*")
+table.insert(vimgrep_arguments, "--trim")
 
-require('telescope').setup {defaults = {vimgrep_arguments = vimgrep_arguments}}
+require('telescope').setup {
+    defaults = {
+        vimgrep_arguments = vimgrep_arguments,
+        layout_config = {width = 0.99, preview_cutoff = 1, preview_width = 0.66}
+    }
+}
 require('telescope').load_extension('fzf')
-map('n', '<leader>d', builtin.diagnostics)
+map('n', '<leader>fd', builtin.diagnostics)
 map('n', '<leader>rf', builtin.lsp_references)
 map('n', '<leader>b', builtin.buffers)
 map('n', '<leader>f', builtin.git_files)

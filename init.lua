@@ -6,7 +6,7 @@ require('packer').startup(function(use)
     use 'numToStr/Comment.nvim'
     use 'kylechui/nvim-surround'
     use 'folke/which-key.nvim'
-    use "catppuccin/nvim"
+    use {"catppuccin/nvim", as = "catppuccin"}
     use 'nvim-lua/plenary.nvim'
     use 'kyazdani42/nvim-web-devicons'
     use 'nvim-lualine/lualine.nvim'
@@ -47,7 +47,6 @@ vim.o.clipboard = 'unnamedplus'
 vim.o.undofile = true -- persistent undo
 vim.o.confirm = true
 vim.o.backup = false
-vim.o.updatetime = 300
 
 -- Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
@@ -81,9 +80,7 @@ vim.cmd [[
   augroup end
 ]]
 
-require("catppuccin").setup {flavour = "mocha"}
-
-vim.cmd('colorscheme catppuccin')
+vim.cmd.colorscheme "catppuccin"
 vim.diagnostic.config({virtual_text = false, update_in_insert = true})
 map('n', '<leader>d', vim.diagnostic.open_float)
 

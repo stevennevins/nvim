@@ -129,6 +129,11 @@ _G.packer_plugins = {
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/lualine.nvim",
     url = "https://github.com/nvim-lualine/lualine.nvim"
   },
+  ["netrw.nvim"] = {
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/netrw.nvim",
+    url = "https://github.com/prichrd/netrw.nvim"
+  },
   ["null-ls.nvim"] = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
@@ -148,6 +153,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/nvim-lspconfig",
     url = "https://github.com/neovim/nvim-lspconfig"
+  },
+  ["nvim-surround"] = {
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/nvim-surround",
+    url = "https://github.com/kylechui/nvim-surround"
   },
   ["nvim-treesitter"] = {
     loaded = true,
@@ -178,6 +188,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/tabline.nvim",
     url = "https://github.com/kdheepak/tabline.nvim"
+  },
+  ["telescope-fzf-native.nvim"] = {
+    loaded = true,
+    path = "/Users/stevennevins/.local/share/nvim/site/pack/packer/start/telescope-fzf-native.nvim",
+    url = "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
   },
   ["telescope.nvim"] = {
     loaded = true,

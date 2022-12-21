@@ -33,15 +33,15 @@ map('t', '<C-[>', '<C-\\><C-n>') -- exit
 
 require("lazy").setup({
     "samjwill/nvim-unception", 'prichrd/netrw.nvim', 'declancm/cinnamon.nvim',
-    'numToStr/Comment.nvim', 'kylechui/nvim-surround', 'folke/which-key.nvim',
+    'numToStr/Comment.nvim', 'folke/which-key.nvim',
     {"catppuccin/nvim", as = "catppuccin"}, 'nvim-lua/plenary.nvim',
     'kyazdani42/nvim-web-devicons', 'nvim-lualine/lualine.nvim',
     'kdheepak/tabline.nvim', 'lewis6991/gitsigns.nvim',
     'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim',
-    'petertriho/cmp-git', 'zbirenbaum/copilot.lua', 'zbirenbaum/copilot-cmp',
+    'zbirenbaum/copilot.lua', 'zbirenbaum/copilot-cmp',
     "jose-elias-alvarez/null-ls.nvim", 'neovim/nvim-lspconfig',
-    'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer',
-    'hrsh7th/cmp-path', 'hrsh7th/cmp-vsnip', 'hrsh7th/vim-vsnip'
+    'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-vsnip',
+    'hrsh7th/vim-vsnip'
 })
 
 vim.o.expandtab = true
@@ -81,8 +81,6 @@ require("copilot").setup {}
 require("copilot_cmp").setup {}
 -- comment
 require('Comment').setup()
-
-require('nvim-surround').setup()
 
 -- Lualine
 require('lualine').setup {
@@ -201,11 +199,9 @@ cmp.setup {
     }),
     sources = cmp.config.sources({
         {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"},
-        {name = 'copilot'}, {name = 'git'}
-    }, {{name = 'buffer'}})
+        {name = 'copilot'}
+    })
 }
--- setup git completion
-require("cmp_git").setup()
 -- Parsers must be installed manually via :TSInstall
 require('nvim-treesitter.configs').setup {
     highlight = {

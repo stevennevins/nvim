@@ -1,52 +1,11 @@
-require('packer').startup(function(use)
-    use 'wbthomason/packer.nvim'
-    use 'lewis6991/impatient.nvim'
-    use "samjwill/nvim-unception"
-    use 'prichrd/netrw.nvim'
-    use 'numToStr/Comment.nvim'
-    use 'kylechui/nvim-surround'
-    use 'folke/which-key.nvim'
-    use {"catppuccin/nvim", as = "catppuccin"}
-    use 'nvim-lua/plenary.nvim'
-    use 'kyazdani42/nvim-web-devicons'
-    use 'nvim-lualine/lualine.nvim'
-    use 'kdheepak/tabline.nvim'
-    use 'lewis6991/gitsigns.nvim'
-    use 'nvim-treesitter/nvim-treesitter'
-    use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'}
-    use 'nvim-telescope/telescope.nvim'
-    use 'petertriho/cmp-git'
-    use 'zbirenbaum/copilot.lua'
-    use 'zbirenbaum/copilot-cmp'
-    use "jose-elias-alvarez/null-ls.nvim"
-    use 'neovim/nvim-lspconfig'
-    use 'hrsh7th/nvim-cmp'
-    use 'hrsh7th/cmp-nvim-lsp'
-    use 'hrsh7th/cmp-buffer'
-    use 'hrsh7th/cmp-path'
-    use 'hrsh7th/cmp-vsnip'
-    use 'hrsh7th/vim-vsnip'
-end)
-
-require("impatient")
-
-vim.o.expandtab = true
-vim.o.shiftwidth = 4
-vim.o.tabstop = 4
-vim.o.number = true
-vim.o.termguicolors = true
-vim.o.ignorecase = true
-vim.o.smartcase = true
-vim.o.wildmode = 'longest:full,full'
-vim.o.wrap = false
-vim.o.list = true
-vim.o.listchars = 'tab:▸ ,trail:·'
-vim.o.mouse = 'a'
-vim.o.scrolloff = 25
-vim.o.clipboard = 'unnamedplus'
-vim.o.undofile = true -- persistent undo
-vim.o.confirm = true
-vim.o.backup = false
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+        "git", "clone", "--filter=blob:none", "--single-branch",
+        "https://github.com/folke/lazy.nvim.git", lazypath
+    })
+end
+vim.opt.runtimepath:prepend(lazypath)
 
 -- Remap space as leader key
 vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
@@ -72,6 +31,37 @@ map('n', '<C-l>', '<C-w>l')
 -- Terminal mappings
 map('t', '<C-[>', '<C-\\><C-n>') -- exit
 
+require("lazy").setup({
+    "samjwill/nvim-unception", 'prichrd/netrw.nvim', 'declancm/cinnamon.nvim',
+    'numToStr/Comment.nvim', 'kylechui/nvim-surround', 'folke/which-key.nvim',
+    {"catppuccin/nvim", as = "catppuccin"}, 'nvim-lua/plenary.nvim',
+    'kyazdani42/nvim-web-devicons', 'nvim-lualine/lualine.nvim',
+    'kdheepak/tabline.nvim', 'lewis6991/gitsigns.nvim',
+    'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim',
+    'petertriho/cmp-git', 'zbirenbaum/copilot.lua', 'zbirenbaum/copilot-cmp',
+    "jose-elias-alvarez/null-ls.nvim", 'neovim/nvim-lspconfig',
+    'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer',
+    'hrsh7th/cmp-path', 'hrsh7th/cmp-vsnip', 'hrsh7th/vim-vsnip'
+})
+
+vim.o.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.number = true
+vim.o.termguicolors = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.wildmode = 'longest:full,full'
+vim.o.wrap = false
+vim.o.list = true
+vim.o.listchars = 'tab:▸ ,trail:·'
+vim.o.mouse = 'a'
+vim.o.scrolloff = 25
+vim.o.clipboard = 'unnamedplus'
+vim.o.undofile = true -- persistent undo
+vim.o.confirm = true
+vim.o.backup = false
+
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -85,6 +75,7 @@ vim.diagnostic.config({virtual_text = false, update_in_insert = true})
 map('n', '<leader>d', vim.diagnostic.open_float)
 
 require'netrw'.setup {}
+require'cinnamon'.setup {}
 -- Copilot
 require("copilot").setup {}
 require("copilot_cmp").setup {}
@@ -232,8 +223,10 @@ require("null-ls").setup({
         require("null-ls").builtins.formatting.rustfmt,
         require("null-ls").builtins.diagnostics.golangci_lint,
         require("null-ls").builtins.formatting.prettierd.with({
-            filetypes = {"solidity", "python", "javascript", "json", "md"}
-        })
+            filetypes = {"solidity", "python", "json", "md"}
+        }), require("null-ls").builtins.diagnostics.eslint_d,
+        require("null-ls").builtins.code_actions.eslint_d,
+        require("null-ls").builtins.formatting.eslint_d
     },
     -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client, bufnr)
@@ -269,7 +262,6 @@ require('telescope').setup {
         layout_config = {width = 0.99, preview_cutoff = 1, preview_width = 0.66}
     }
 }
-require('telescope').load_extension('fzf')
 map('n', '<leader>fd', builtin.diagnostics)
 map('n', '<leader>rf', builtin.lsp_references)
 map('n', '<leader>b', builtin.buffers)

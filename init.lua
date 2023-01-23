@@ -1,8 +1,9 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
-        "git", "clone", "--filter=blob:none", "--single-branch",
-        "https://github.com/folke/lazy.nvim.git", lazypath
+        "git", "clone", "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git", "--branch=stable", -- latest stable release
+        lazypath
     })
 end
 vim.opt.runtimepath:prepend(lazypath)
@@ -32,16 +33,15 @@ map('n', '<C-l>', '<C-w>l')
 map('t', '<C-[>', '<C-\\><C-n>') -- exit
 
 require("lazy").setup({
-    "samjwill/nvim-unception", 'prichrd/netrw.nvim', 'declancm/cinnamon.nvim',
-    'numToStr/Comment.nvim', 'folke/which-key.nvim',
-    {"catppuccin/nvim", as = "catppuccin"}, 'nvim-lua/plenary.nvim',
-    'kyazdani42/nvim-web-devicons', 'nvim-lualine/lualine.nvim',
-    'kdheepak/tabline.nvim', 'lewis6991/gitsigns.nvim',
-    'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim',
-    'zbirenbaum/copilot.lua', 'zbirenbaum/copilot-cmp',
-    "jose-elias-alvarez/null-ls.nvim", 'neovim/nvim-lspconfig',
-    'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-vsnip',
-    'hrsh7th/vim-vsnip'
+    "samjwill/nvim-unception", 'prichrd/netrw.nvim',
+    'jedrzejboczar/possession.nvim', 'numToStr/Comment.nvim',
+    'folke/which-key.nvim', {"catppuccin/nvim", as = "catppuccin"},
+    'nvim-lua/plenary.nvim', 'kyazdani42/nvim-web-devicons',
+    'nvim-lualine/lualine.nvim', 'kdheepak/tabline.nvim',
+    'lewis6991/gitsigns.nvim', 'nvim-treesitter/nvim-treesitter',
+    'nvim-telescope/telescope.nvim', "jose-elias-alvarez/null-ls.nvim",
+    'neovim/nvim-lspconfig', 'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp',
+    'hrsh7th/cmp-vsnip', 'hrsh7th/vim-vsnip'
 })
 
 vim.o.expandtab = true
@@ -61,7 +61,9 @@ vim.o.clipboard = 'unnamedplus'
 vim.o.undofile = true -- persistent undo
 vim.o.confirm = true
 vim.o.backup = false
-
+vim.o.updatetime = 8000
+vim.o.redrawtime = 8000
+vim.o.ttyfast = true
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -70,18 +72,27 @@ vim.cmd [[
   augroup end
 ]]
 
-vim.cmd.colorscheme "catppuccin"
-vim.diagnostic.config({virtual_text = false, update_in_insert = true})
-map('n', '<leader>d', vim.diagnostic.open_float)
+require("catppuccin").setup({transparent_background = true})
 
+vim.cmd.colorscheme "catppuccin"
+vim.diagnostic.config({virtual_text = false, update_in_insert = false})
+map('n', '<leader>dd', vim.diagnostic.open_float)
+
+-- possession setup
+
+require("possession").setup({
+    delete_buffers = true,
+    commands = {
+        save = 'SSave',
+        load = 'SLoad',
+        delete = 'SDelete',
+        list = 'SList'
+    }
+})
+local possession = require("possession")
 require'netrw'.setup {}
-require'cinnamon'.setup {}
--- Copilot
-require("copilot").setup {}
-require("copilot_cmp").setup {}
 -- comment
 require('Comment').setup()
-
 -- Lualine
 require('lualine').setup {
     options = {
@@ -89,6 +100,7 @@ require('lualine').setup {
         component_separators = '',
         section_separators = ''
     }
+
 }
 
 -- tabline setup
@@ -146,8 +158,6 @@ require'lspconfig'.solidity.setup {
 }
 
 require'lspconfig'.pyright.setup {}
-require'lspconfig'.gopls.setup {}
-require'lspconfig'.rust_analyzer.setup {}
 
 -- Setup nvim-cmp.
 vim.opt.completeopt = {"menuone", "noselect"}
@@ -165,6 +175,8 @@ local feedkey = function(key, mode)
 end
 local cmp = require('cmp')
 cmp.setup {
+    completion = {autocomplete = false},
+
     snippet = {
         expand = function(args)
             vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
@@ -198,8 +210,8 @@ cmp.setup {
         end, {"i", "s"})
     }),
     sources = cmp.config.sources({
-        {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"},
-        {name = 'copilot'}
+        {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"}
+        -- {name = 'copilot'}
     })
 }
 -- Parsers must be installed manually via :TSInstall
@@ -215,11 +227,10 @@ require("null-ls").setup({
     sources = {
         require("null-ls").builtins.diagnostics.solhint,
         require("null-ls").builtins.formatting.lua_format,
-        require("null-ls").builtins.formatting.gofumpt,
-        require("null-ls").builtins.formatting.rustfmt,
-        require("null-ls").builtins.diagnostics.golangci_lint,
         require("null-ls").builtins.formatting.prettierd.with({
-            filetypes = {"solidity", "python", "json", "md"}
+            filetypes = {
+                "solidity", "python", "javascript", "typescript", "json", "md"
+            }
         }), require("null-ls").builtins.diagnostics.eslint_d,
         require("null-ls").builtins.code_actions.eslint_d,
         require("null-ls").builtins.formatting.eslint_d
@@ -252,14 +263,17 @@ table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!lib/*")
 table.insert(vimgrep_arguments, "--trim")
 
+telescope.load_extension('possession')
+map("n", "<leader>sl", telescope.extensions.possession.list)
+
 require('telescope').setup {
     defaults = {
         vimgrep_arguments = vimgrep_arguments,
         layout_config = {width = 0.99, preview_cutoff = 1, preview_width = 0.66}
     }
 }
-map('n', '<leader>fd', builtin.diagnostics)
-map('n', '<leader>rf', builtin.lsp_references)
+map('n', '<leader>d', builtin.diagnostics)
+map('n', '<leader>r', builtin.lsp_references)
 map('n', '<leader>b', builtin.buffers)
 map('n', '<leader>f', builtin.git_files)
 map('n', '<leader>g', builtin.live_grep)

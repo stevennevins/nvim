@@ -9,7 +9,7 @@ end
 vim.opt.runtimepath:prepend(lazypath)
 
 -- Remap space as leader key
-vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -35,7 +35,7 @@ map('t', '<C-[>', '<C-\\><C-n>') -- exit
 require("lazy").setup({
     "samjwill/nvim-unception", 'prichrd/netrw.nvim',
     'jedrzejboczar/possession.nvim', 'numToStr/Comment.nvim',
-    'folke/which-key.nvim', {"catppuccin/nvim", as = "catppuccin"},
+    'folke/which-key.nvim', { "catppuccin/nvim", as = "catppuccin" },
     'nvim-lua/plenary.nvim', 'kyazdani42/nvim-web-devicons',
     'nvim-lualine/lualine.nvim', 'zbirenbaum/copilot.lua',
     'zbirenbaum/copilot-cmp', 'lewis6991/gitsigns.nvim',
@@ -72,10 +72,10 @@ vim.cmd [[
   augroup end
 ]]
 
-require("catppuccin").setup({transparent_background = true})
+require("catppuccin").setup({ transparent_background = true })
 
 vim.cmd.colorscheme "catppuccin"
-vim.diagnostic.config({virtual_text = false, update_in_insert = false})
+vim.diagnostic.config({ virtual_text = false, update_in_insert = false })
 map('n', '<leader>dd', vim.diagnostic.open_float)
 
 -- possession setup
@@ -89,7 +89,7 @@ require("possession").setup({
     }
 })
 local possession = require("possession")
-require'netrw'.setup {}
+require 'netrw'.setup {}
 -- comment
 require('Comment').setup()
 -- Lualine
@@ -103,6 +103,7 @@ require('lualine').setup {
 }
 require("chatgpt").setup({})
 require("copilot").setup {}
+require("copilot_cmp").setup {}
 
 -- tabline setup
 -- require('tabline').setup {}
@@ -120,34 +121,34 @@ require('gitsigns').setup {
             if vim.wo.diff then return ']c' end
             vim.schedule(function() gs.next_hunk() end)
             return '<Ignore>'
-        end, {expr = true})
+        end, { expr = true })
 
         map('n', '[c', function()
             if vim.wo.diff then return '[c' end
             vim.schedule(function() gs.prev_hunk() end)
             return '<Ignore>'
-        end, {expr = true})
+        end, { expr = true })
 
         -- Actions
-        map({'n', 'v'}, '<leader>hs', gs.stage_hunk)
-        map({'n', 'v'}, '<leader>hr', gs.reset_hunk)
-        map({'n', 'v'}, '<leader>gp', ':term git push<CR> :bd<CR>')
+        map({ 'n', 'v' }, '<leader>hs', gs.stage_hunk)
+        map({ 'n', 'v' }, '<leader>hr', gs.reset_hunk)
+        map({ 'n', 'v' }, '<leader>gp', ':term git push<CR> :bd<CR>')
         map('n', '<leader>hS', gs.stage_buffer)
         map('n', '<leader>hu', gs.undo_stage_hunk)
         map('n', '<leader>hR', gs.reset_buffer)
         map('n', '<leader>hp', gs.preview_hunk)
-        map('n', '<leader>hb', function() gs.blame_line {full = true} end)
+        map('n', '<leader>hb', function() gs.blame_line { full = true } end)
         map('n', '<leader>tb', gs.toggle_current_line_blame)
         map('n', '<leader>hd', gs.diffthis)
         map('n', '<leader>hD', function() gs.diffthis('~') end)
         map('n', '<leader>td', gs.toggle_deleted)
 
         -- Text object
-        map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
     end
 }
-require'lspconfig'.tsserver.setup {
-    cmd = {"bun", "run", "typescript-language-server", "--stdio"},
+require 'lspconfig'.tsserver.setup {
+    cmd = { "bun", "run", "typescript-language-server", "--stdio" },
     on_attach = function(client)
         map('n', 'rn', vim.lsp.buf.rename)
         map('n', 'gd', vim.lsp.buf.definition)
@@ -157,10 +158,10 @@ require'lspconfig'.tsserver.setup {
     end
 
 }
-require'lspconfig'.lua_ls.setup {}
+require 'lspconfig'.lua_ls.setup {}
 -- Lsp setup
-require'lspconfig'.solidity.setup {
-    cmd = {"bun", "run", "solidity-ls", "--stdio"},
+require 'lspconfig'.solidity.setup {
+    cmd = { "bun", "run", "solidity-ls", "--stdio" },
     on_attach = function(client)
         map('n', 'rn', vim.lsp.buf.rename)
         map('n', 'gd', vim.lsp.buf.definition)
@@ -171,22 +172,22 @@ require'lspconfig'.solidity.setup {
 }
 
 -- Setup nvim-cmp.
-vim.opt.completeopt = {"menuone", "noselect"}
+vim.opt.completeopt = { "menuone", "noselect" }
 local has_words_before = function()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0 and
-               vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col,
-                                                                          col)
-                   :match("%s") == nil
+        vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col,
+            col)
+        :match("%s") == nil
 end
 
 local feedkey = function(key, mode)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true),
-                          mode, true)
+        mode, true)
 end
 local cmp = require('cmp')
 cmp.setup {
-    completion = {autocomplete = false},
+    completion = { autocomplete = false },
 
     snippet = {
         expand = function(args)
@@ -199,7 +200,7 @@ cmp.setup {
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.abort(),
         -- ['C-y'] accepts snippet
-        ['<CR>'] = cmp.mapping.confirm({select = true}), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<C-n>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
@@ -210,18 +211,18 @@ cmp.setup {
             else
                 fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
             end
-        end, {"i", "s"}),
+        end, { "i", "s" }),
         ["<C-p>"] = cmp.mapping(function()
             if cmp.visible() then
                 cmp.select_prev_item()
             elseif vim.fn["vsnip#jumpable"](-1) == 1 then
                 feedkey("<Plug>(vsnip-jump-prev)", "")
             end
-        end, {"i", "s"})
+        end, { "i", "s" })
     }),
     sources = cmp.config.sources({
-        {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"},
-        {name = 'copilot'}
+        { name = 'nvim_lsp' }, { name = 'vsnip' }, { name = "null-ls" },
+        { name = 'copilot' }
     })
 }
 -- Parsers must be installed manually via :TSInstall
@@ -236,21 +237,21 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
     sources = {
         require("null-ls").builtins.diagnostics.solhint.with({
-            command = {"bunx", "solhint"}
+            command = { "bunx", "solhint" }
         }), require("null-ls").builtins.formatting.lua_format,
         require("null-ls").builtins.formatting.prettier.with({
-            command = {"bunx", "prettier"},
+            command = { "bunx", "prettier" },
             filetypes = {
                 "solidity", "python", "javascript", "typescript", "json", "md"
             }
         }), require("null-ls").builtins.diagnostics.eslint.with({
-            command = {"bunx", "eslint"}
-        })
+        command = { "bunx", "eslint" }
+    })
     },
     -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client, bufnr)
         if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({group = augroup, buffer = bufnr})
+            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
             vim.api.nvim_create_autocmd("BufWritePre", {
                 group = augroup,
                 buffer = bufnr,
@@ -264,7 +265,7 @@ local telescope = require("telescope")
 local telescopeConfig = require("telescope.config")
 local builtin = require('telescope.builtin')
 -- Clone the default Telescope configuration
-local vimgrep_arguments = {unpack(telescopeConfig.values.vimgrep_arguments)}
+local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
 
 -- I don't want to search in the `.git`, 'node_modules', or 'lib' directories.
 table.insert(vimgrep_arguments, "--glob")
@@ -281,7 +282,7 @@ map("n", "<leader>sl", telescope.extensions.possession.list)
 require('telescope').setup {
     defaults = {
         vimgrep_arguments = vimgrep_arguments,
-        layout_config = {width = 0.99, preview_cutoff = 1, preview_width = 0.66}
+        layout_config = { width = 0.99, preview_cutoff = 1, preview_width = 0.66 }
     }
 }
 map('n', '<leader>d', builtin.diagnostics)

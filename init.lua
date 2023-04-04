@@ -37,18 +37,18 @@ require("lazy").setup({
     'jedrzejboczar/possession.nvim', 'numToStr/Comment.nvim',
     'folke/which-key.nvim', {"catppuccin/nvim", as = "catppuccin"},
     'nvim-lua/plenary.nvim', 'kyazdani42/nvim-web-devicons',
-    'nvim-lualine/lualine.nvim', 'kdheepak/tabline.nvim',
-    'lewis6991/gitsigns.nvim', 'nvim-treesitter/nvim-treesitter',
-    'nvim-telescope/telescope.nvim', "jose-elias-alvarez/null-ls.nvim",
-    'neovim/nvim-lspconfig', 'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp',
-    'hrsh7th/cmp-vsnip', 'hrsh7th/vim-vsnip'
+    'nvim-lualine/lualine.nvim', 'zbirenbaum/copilot.lua',
+    'zbirenbaum/copilot-cmp', 'lewis6991/gitsigns.nvim',
+    'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim',
+    "jose-elias-alvarez/null-ls.nvim", 'neovim/nvim-lspconfig',
+    'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-vsnip',
+    'hrsh7th/vim-vsnip', 'jackMort/ChatGPT.nvim', 'MunifTanjim/nui.nvim'
 })
 
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.number = true
-vim.o.termguicolors = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.wildmode = 'longest:full,full'
@@ -81,7 +81,6 @@ map('n', '<leader>dd', vim.diagnostic.open_float)
 -- possession setup
 
 require("possession").setup({
-    delete_buffers = true,
     commands = {
         save = 'SSave',
         load = 'SLoad',
@@ -102,9 +101,11 @@ require('lualine').setup {
     }
 
 }
+require("chatgpt").setup({})
+require("copilot").setup {}
 
 -- tabline setup
-require('tabline').setup {}
+-- require('tabline').setup {}
 
 -- whichkey
 require('which-key').setup {}
@@ -145,9 +146,21 @@ require('gitsigns').setup {
         map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
     end
 }
+require'lspconfig'.tsserver.setup {
+    cmd = {"bun", "run", "typescript-language-server", "--stdio"},
+    on_attach = function(client)
+        map('n', 'rn', vim.lsp.buf.rename)
+        map('n', 'gd', vim.lsp.buf.definition)
+        map('n', '<leader>k', vim.lsp.buf.hover)
+        map('n', '[d', vim.diagnostic.goto_next)
+        map('n', ']d', vim.diagnostic.goto_prev)
+    end
 
+}
+require'lspconfig'.lua_ls.setup {}
 -- Lsp setup
 require'lspconfig'.solidity.setup {
+    cmd = {"bun", "run", "solidity-ls", "--stdio"},
     on_attach = function(client)
         map('n', 'rn', vim.lsp.buf.rename)
         map('n', 'gd', vim.lsp.buf.definition)
@@ -156,8 +169,6 @@ require'lspconfig'.solidity.setup {
         map('n', ']d', vim.diagnostic.goto_prev)
     end
 }
-
-require'lspconfig'.pyright.setup {}
 
 -- Setup nvim-cmp.
 vim.opt.completeopt = {"menuone", "noselect"}
@@ -200,7 +211,6 @@ cmp.setup {
                 fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
             end
         end, {"i", "s"}),
-
         ["<C-p>"] = cmp.mapping(function()
             if cmp.visible() then
                 cmp.select_prev_item()
@@ -210,8 +220,8 @@ cmp.setup {
         end, {"i", "s"})
     }),
     sources = cmp.config.sources({
-        {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"}
-        -- {name = 'copilot'}
+        {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"},
+        {name = 'copilot'}
     })
 }
 -- Parsers must be installed manually via :TSInstall
@@ -225,15 +235,17 @@ require('nvim-treesitter.configs').setup {
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
     sources = {
-        require("null-ls").builtins.diagnostics.solhint,
-        require("null-ls").builtins.formatting.lua_format,
-        require("null-ls").builtins.formatting.prettierd.with({
+        require("null-ls").builtins.diagnostics.solhint.with({
+            command = {"bunx", "solhint"}
+        }), require("null-ls").builtins.formatting.lua_format,
+        require("null-ls").builtins.formatting.prettier.with({
+            command = {"bunx", "prettier"},
             filetypes = {
                 "solidity", "python", "javascript", "typescript", "json", "md"
             }
-        }), require("null-ls").builtins.diagnostics.eslint_d,
-        require("null-ls").builtins.code_actions.eslint_d,
-        require("null-ls").builtins.formatting.eslint_d
+        }), require("null-ls").builtins.diagnostics.eslint.with({
+            command = {"bunx", "eslint"}
+        })
     },
     -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client, bufnr)

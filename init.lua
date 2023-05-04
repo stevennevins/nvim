@@ -32,17 +32,20 @@ map('n', '<C-l>', '<C-w>l')
 -- Terminal mappings
 map('t', '<C-[>', '<C-\\><C-n>') -- exit
 
+-- map window maxize toggle
+map('n', '<C-w>m', '<cmd>:MaximizerToggle<CR>')
+
 require("lazy").setup({
-    "samjwill/nvim-unception", 'prichrd/netrw.nvim', 'numToStr/Comment.nvim', 
-    'folke/which-key.nvim', {"catppuccin/nvim", as = "catppuccin"},
-    'nvim-lua/plenary.nvim', 'kyazdani42/nvim-web-devicons',
-    'nvim-lualine/lualine.nvim', 'zbirenbaum/copilot.lua',
-    'zbirenbaum/copilot-cmp', 'lewis6991/gitsigns.nvim',
+    'samjwill/nvim-unception', 'prichrd/netrw.nvim', 'numToStr/Comment.nvim',
+    'folke/which-key.nvim', 'nvim-lua/plenary.nvim',
+    'kyazdani42/nvim-web-devicons', 'nvim-lualine/lualine.nvim',
+    'zbirenbaum/copilot.lua', 'zbirenbaum/copilot-cmp',
+    'lewis6991/gitsigns.nvim', 'RRethy/nvim-base16',
     'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim',
-    "jose-elias-alvarez/null-ls.nvim", 'neovim/nvim-lspconfig',
+    'jose-elias-alvarez/null-ls.nvim', 'neovim/nvim-lspconfig',
     'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'onsails/lspkind.nvim',
     'hrsh7th/cmp-vsnip', 'hrsh7th/vim-vsnip', 'james1236/backseat.nvim',
-    'CoderCookE/vim-chatgpt', 'jackMort/ChatGPT.nvim', 'MunifTanjim/nui.nvim'
+    'CoderCookE/vim-chatgpt'
 })
 
 vim.o.expandtab = true
@@ -52,7 +55,9 @@ vim.o.number = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.wildmode = 'longest:full,full'
-vim.o.wrap = false
+vim.o.wrap = true
+vim.o.linebreak = true
+vim.o.nolist = true
 vim.o.list = true
 vim.o.listchars = 'tab:▸ ,trail:·'
 vim.o.mouse = 'a'
@@ -72,9 +77,6 @@ vim.cmd [[
   augroup end
 ]]
 
-require("catppuccin").setup({transparent_background = true})
-
-vim.cmd.colorscheme "catppuccin"
 vim.diagnostic.config({virtual_text = false, update_in_insert = false})
 map('n', '<leader>dd', vim.diagnostic.open_float)
 
@@ -90,7 +92,6 @@ require('lualine').setup {
     }
 
 }
-require("chatgpt").setup({})
 require("backseat").setup {}
 require("copilot").setup {}
 require("copilot_cmp").setup {}
@@ -244,6 +245,7 @@ require('nvim-treesitter.configs').setup {
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
     sources = {
+        -- require("null-ls").builtins.diagnostics.solhint,
         require("null-ls").builtins.diagnostics.solhint.with({
             command = {"bunx", "solhint"}
         }), require("null-ls").builtins.formatting.lua_format,

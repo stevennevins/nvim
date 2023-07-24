@@ -29,27 +29,30 @@ map('n', '<C-h>', '<C-w>h')
 map('n', '<C-j>', '<C-w>j')
 map('n', '<C-k>', '<C-w>k')
 map('n', '<C-l>', '<C-w>l')
+map('n', '<C-v>', '<cmd>:vsp | term<CR>')
+map('n', '<C-x>', '<cmd>:bd<CR>')
+map('n', '<C-d>', '<C-d>zz')
+map('n', '<C-u>', '<C-u>zz')
+-- map window maxize toggle
+map('n', '<C-f>', '<cmd>:MaximizerToggle<CR>')
 -- Terminal mappings
 map('t', '<C-[>', '<C-\\><C-n>') -- exit
 
--- map window maxize toggle
-map('n', '<C-w>m', '<cmd>:MaximizerToggle<CR>')
-
 require("lazy").setup({
-    'samjwill/nvim-unception', 'prichrd/netrw.nvim', 'numToStr/Comment.nvim',
-    'folke/which-key.nvim', 'nvim-lua/plenary.nvim',
-    'kyazdani42/nvim-web-devicons', 'nvim-lualine/lualine.nvim',
-    'zbirenbaum/copilot.lua', 'zbirenbaum/copilot-cmp',
-    'lewis6991/gitsigns.nvim', 'RRethy/nvim-base16',
+    'folke/neodev.nvim', 'm4xshen/hardtime.nvim', 'samjwill/nvim-unception',
+    'szw/vim-maximizer', 'numToStr/Comment.nvim', 'folke/which-key.nvim',
+    'nvim-lua/plenary.nvim', 'kyazdani42/nvim-web-devicons',
+    'RRethy/nvim-base16', 'lewis6991/gitsigns.nvim',
     'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim',
     'jose-elias-alvarez/null-ls.nvim', 'neovim/nvim-lspconfig',
-    'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'onsails/lspkind.nvim',
-    'hrsh7th/cmp-vsnip', 'hrsh7th/vim-vsnip', 'james1236/backseat.nvim',
-    'CoderCookE/vim-chatgpt'
+    'hrsh7th/nvim-cmp', 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-vsnip',
+    'hrsh7th/vim-vsnip', 'james1236/backseat.nvim', 'CoderCookE/vim-chatgpt'
 })
 
+vim.o.splitright = true
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
+vim.o.relativenumber = true
 vim.o.tabstop = 4
 vim.o.number = true
 vim.o.ignorecase = true
@@ -66,9 +69,9 @@ vim.o.clipboard = 'unnamedplus'
 vim.o.undofile = true -- persistent undo
 vim.o.confirm = true
 vim.o.backup = false
-vim.o.updatetime = 8000
-vim.o.redrawtime = 8000
 vim.o.ttyfast = true
+
+vim.cmd.colorscheme "base16-catppuccin"
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -80,24 +83,12 @@ vim.cmd [[
 vim.diagnostic.config({virtual_text = false, update_in_insert = false})
 map('n', '<leader>dd', vim.diagnostic.open_float)
 
-require'netrw'.setup {}
 -- comment
-require('Comment').setup()
--- Lualine
-require('lualine').setup {
-    options = {
-        theme = "auto",
-        component_separators = '',
-        section_separators = ''
-    }
-
-}
-require("backseat").setup {}
-require("copilot").setup {}
-require("copilot_cmp").setup {}
-
--- tabline setup
--- require('tabline').setup {}
+require('Comment').setup {}
+require('hardtime').setup {}
+require("backseat").setup {openai_model_id = 'gpt-3.5-turbo-16k'}
+-- vim-chatgpt
+vim.g.chat_gpt_mod = 'gpt-3.5-turbo-16k'
 
 -- whichkey
 require('which-key').setup {}
@@ -138,9 +129,12 @@ require('gitsigns').setup {
         map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
     end
 }
-require'lspconfig'.tsserver.setup {
-    cmd = {"bun", "run", "typescript-language-server", "--stdio"},
+-- Neodev has to be before lspconfig
+require("neodev").setup {}
+require("lspconfig").tsserver.setup {
     on_attach = function(client)
+        -- TODO: Delete after implementation merged in main
+        client.server_capabilities.semanticTokensProvider = nil
         map('n', 'rn', vim.lsp.buf.rename)
         map('n', 'gd', vim.lsp.buf.definition)
         map('n', '<leader>k', vim.lsp.buf.hover)
@@ -149,11 +143,29 @@ require'lspconfig'.tsserver.setup {
     end
 
 }
-require'lspconfig'.lua_ls.setup {}
--- Lsp setup
-require'lspconfig'.solidity.setup {
-    cmd = {"bun", "run", "solidity-ls", "--stdio"},
+require'lspconfig'.lua_ls.setup {
     on_attach = function(client)
+        -- TODO: Delete after implementation merged in main
+        client.server_capabilities.semanticTokensProvider = nil
+    end
+
+}
+
+-- Lsp setup
+require'lspconfig'.rust_analyzer.setup {}
+require'lspconfig'.pylsp.setup {
+    on_attach = function(client)
+        map('n', 'rn', vim.lsp.buf.rename)
+        map('n', 'gd', vim.lsp.buf.definition)
+        map('n', '<leader>k', vim.lsp.buf.hover)
+        map('n', '[d', vim.diagnostic.goto_next)
+        map('n', ']d', vim.diagnostic.goto_prev)
+    end
+}
+require'lspconfig'.solidity_ls_nomicfoundation.setup {
+    -- require'lspconfig'.solidity.setup {
+    on_attach = function(client)
+        -- TODO: Delete after implementation merged in main
         map('n', 'rn', vim.lsp.buf.rename)
         map('n', 'gd', vim.lsp.buf.definition)
         map('n', '<leader>k', vim.lsp.buf.hover)
@@ -177,25 +189,10 @@ local feedkey = function(key, mode)
                           mode, true)
 end
 local cmp = require('cmp')
-local lspkind = require('lspkind')
 cmp.setup {
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered()
-    },
-    formatting = {
-        fields = {"kind", "abbr", "menu"},
-        format = function(entry, vim_item)
-            local kind = require("lspkind").cmp_format({
-                mode = "symbol_text",
-                maxwidth = 25
-            })(entry, vim_item)
-            local strings = vim.split(kind.kind, "%s", {trimempty = true})
-            kind.kind = " " .. (strings[1] or "") .. " "
-            kind.menu = "    (" .. (strings[2] or "") .. ")"
-
-            return kind
-        end
     },
     -- completion = {autocomplete = false},
     snippet = {
@@ -230,8 +227,7 @@ cmp.setup {
         end, {"i", "s"})
     }),
     sources = cmp.config.sources({
-        {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"},
-        {name = 'copilot'}
+        {name = 'nvim_lsp'}, {name = 'vsnip'}, {name = "null-ls"}
     })
 }
 -- Parsers must be installed manually via :TSInstall
@@ -243,19 +239,20 @@ require('nvim-treesitter.configs').setup {
 }
 
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+local nls_builtins = require("null-ls.builtins")
 require("null-ls").setup({
     sources = {
-        -- require("null-ls").builtins.diagnostics.solhint,
-        require("null-ls").builtins.diagnostics.solhint.with({
-            command = {"bunx", "solhint"}
-        }), require("null-ls").builtins.formatting.lua_format,
-        require("null-ls").builtins.formatting.prettier.with({
-            command = {"bunx", "prettier"},
+        nls_builtins.diagnostics.solhint, -- solidity
+        nls_builtins.formatting.forge_fmt, -- solidity
+        -- js,ts
+        nls_builtins.diagnostics.tsc, nls_builtins.formatting.lua_format, -- lua
+        nls_builtins.formatting.taplo, -- toml
+        nls_builtins.diagnostics.ruff, -- python
+        nls_builtins.formatting.ruff, -- python
+        nls_builtins.formatting.prettier.with({
             filetypes = {
-                "solidity", "python", "javascript", "typescript", "json", "md"
+                "javascript", "solidity", "json", "markdown", "typescript"
             }
-        }), require("null-ls").builtins.diagnostics.eslint.with({
-            command = {"bunx", "eslint"}
         })
     },
     -- you can reuse a shared lspconfig on_attach callback here
@@ -271,7 +268,6 @@ require("null-ls").setup({
     end
 })
 
-local telescope = require("telescope")
 local telescopeConfig = require("telescope.config")
 local builtin = require('telescope.builtin')
 -- Clone the default Telescope configuration
@@ -289,12 +285,18 @@ table.insert(vimgrep_arguments, "--trim")
 require('telescope').setup {
     defaults = {
         vimgrep_arguments = vimgrep_arguments,
-        layout_config = {width = 0.99, preview_cutoff = 1, preview_width = 0.66}
+        layout_config = {width = 0.99, preview_cutoff = 1, preview_width = 0.5}
     }
 }
+
+-- LPS actions
 map('n', '<leader>d', builtin.diagnostics)
 map('n', '<leader>r', builtin.lsp_references)
+map('n', '<leader>t', builtin.lsp_type_definitions)
+map('n', '<leader>i', builtin.lsp_implementations)
 map('n', '<leader>b', builtin.buffers)
 map('n', '<leader>f', builtin.git_files)
 map('n', '<leader>g', builtin.live_grep)
 map('n', '<leader>p', builtin.resume)
+vim.lsp.handlers["textDocument/hover"] =
+    vim.lsp.with(vim.lsp.handlers.hover, {border = "rounded"})

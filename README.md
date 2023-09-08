@@ -6,7 +6,6 @@ nvim 0.8.0 compatible
 brew install neovim
 brew install solc-select
 brew install luarocks
-brew install fsouza/prettierd/prettierd
 brew install ripgrep
 brew install fd
 ```

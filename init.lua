@@ -210,22 +210,22 @@ lsp.setup_servers { "tsserver", "rust_analyzer", "lua_ls", "pylsp", "solidity_ls
 lsp.setup()
 
 local cmp = require "cmp"
-local cmp_action = require("lsp-zero").cmp_action()
 cmp.setup {
-    mapping = {
-        ["<CR>"] = cmp.mapping.confirm { select = false },
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-n>"] = cmp_action.luasnip_jump_forward(),
-        ["<C-p>"] = cmp_action.luasnip_jump_backward(),
+    window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+    },
+    sources = {
+        { name = "nvim_lsp" },
+    },
+    snippet = {
+        expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+        end,
     },
 }
 -- Parsers must be installed manually via :TSInstall
-require("nvim-treesitter.configs").setup {
-    highlight = {
-        enable = true, -- false will disable the whole extension
-        additional_vim_regex_highlighting = false,
-    },
-}
+require("nvim-treesitter.configs").setup {}
 
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 local nls_builtins = require "null-ls.builtins"
@@ -237,18 +237,18 @@ require("null-ls").setup {
         nls_builtins.formatting.prettier.with { filetypes = { "solidity" } },
     },
     -- you can reuse a shared lspconfig on_attach callback here
-    on_attach = function(client, bufnr)
-        if client.supports_method "textDocument/formatting" then
-            vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                group = augroup,
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.buf.format()
-                end,
-            })
-        end
-    end,
+    -- on_attach = function(client, bufnr)
+    --     if client.supports_method "textDocument/formatting" then
+    --         vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
+    --         vim.api.nvim_create_autocmd("BufWritePre", {
+    --             group = augroup,
+    --             buffer = bufnr,
+    --             callback = function()
+    --                 vim.lsp.buf.format()
+    --             end,
+    --         })
+    --     end
+    -- end,
 }
 
 local telescopeConfig = require "telescope.config"

@@ -117,15 +117,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end,
 })
 
-require("conform").setup {
-    formatters_by_ft = {
-        lua = { "stylua" },
-        python = { "ruff" },
-        toml = { "taplo" },
-        json = { "prettier" },
-        markdown = { "prettier" },
-    },
-}
+-- require("conform").setup {
+--     formatters_by_ft = {
+--         lua = { "stylua" },
+--         python = { "ruff" },
+--         toml = { "taplo" },
+--         json = { "prettier" },
+--         markdown = { "prettier" },
+--     },
+-- }
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     callback = function()
@@ -210,18 +210,11 @@ lsp.setup_servers { "tsserver", "rust_analyzer", "lua_ls", "pylsp", "solidity_ls
 lsp.setup()
 
 local cmp = require "cmp"
+require("luasnip").setup {}
 cmp.setup {
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
-    },
-    sources = {
-        { name = "nvim_lsp" },
-    },
-    snippet = {
-        expand = function(args)
-            require("luasnip").lsp_expand(args.body)
-        end,
     },
 }
 -- Parsers must be installed manually via :TSInstall

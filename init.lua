@@ -57,15 +57,15 @@ require("lazy").setup {
     "nvim-treesitter/nvim-treesitter",
     "nvim-telescope/telescope.nvim",
     "jose-elias-alvarez/null-ls.nvim",
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-nvim-lsp",
+    {"L3MON4D3/LuaSnip",
+	run = "make install_jsregexp"},
     "neovim/nvim-lspconfig",
     {
         "VonHeikemen/lsp-zero.nvim",
         branch = "v2.x",
     },
-    "hrsh7th/nvim-cmp",
-    "hrsh7th/cmp-nvim-lsp",
-    "L3MON4D3/LuaSnip",
-
     "onsails/lspkind-nvim",
     "james1236/backseat.nvim",
     "CoderCookE/vim-chatgpt",
@@ -95,8 +95,8 @@ vim.o.undofile = true -- persistent undo
 vim.o.confirm = true
 vim.o.backup = false
 vim.o.ttyfast = true
-
-vim.cmd.colorscheme "base16-monokai"
+vim.o.termguicolors = true
+vim.cmd.colorscheme("base16-monokai")
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -137,66 +137,20 @@ require("lint").linters_by_ft = {
     solidity = { "solhint" },
     python = { "ruff" },
 }
--- comment
-require("Comment").setup {}
+-- Neodev has to be before lspconfig
+require("neodev").setup {}
 require("hardtime").setup {}
+require("Comment").setup {}
 require("backseat").setup { openai_model_id = "gpt-3.5-turbo" }
 -- vim-chatgpt
-vim.g.chat_gpt_mod = "gpt-4"
+vim.g.chat_gpt_mod = "gpt-3.5-turbo"
 
 -- whichkey
 require("which-key").setup {}
 
 -- Gitsigns
-require("gitsigns").setup {
-    on_attach = function(bufnr)
-        local gs = package.loaded.gitsigns
+require("gitsigns").setup {}
 
-        -- Navigation
-        map("n", "]c", function()
-            if vim.wo.diff then
-                return "]c"
-            end
-            vim.schedule(function()
-                gs.next_hunk()
-            end)
-            return "<Ignore>"
-        end, { expr = true })
-
-        map("n", "[c", function()
-            if vim.wo.diff then
-                return "[c"
-            end
-            vim.schedule(function()
-                gs.prev_hunk()
-            end)
-            return "<Ignore>"
-        end, { expr = true })
-
-        -- Actions
-        map({ "n", "v" }, "<leader>hs", gs.stage_hunk)
-        map({ "n", "v" }, "<leader>hr", gs.reset_hunk)
-        map({ "n", "v" }, "<leader>gp", ":term git push<CR> :bd<CR>")
-        map("n", "<leader>hS", gs.stage_buffer)
-        map("n", "<leader>hu", gs.undo_stage_hunk)
-        map("n", "<leader>hR", gs.reset_buffer)
-        map("n", "<leader>hp", gs.preview_hunk)
-        map("n", "<leader>hb", function()
-            gs.blame_line { full = true }
-        end)
-        map("n", "<leader>tb", gs.toggle_current_line_blame)
-        map("n", "<leader>hd", gs.diffthis)
-        map("n", "<leader>hD", function()
-            gs.diffthis "~"
-        end)
-        map("n", "<leader>td", gs.toggle_deleted)
-
-        -- Text object
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
-    end,
-}
--- Neodev has to be before lspconfig
-require("neodev").setup {}
 local lsp = require("lsp-zero").preset {
     setup_servers_on_start = false,
 }
@@ -210,7 +164,6 @@ lsp.setup_servers { "tsserver", "rust_analyzer", "lua_ls", "pylsp", "solidity_ls
 lsp.setup()
 
 local cmp = require "cmp"
-require("luasnip").setup {}
 cmp.setup {
     window = {
         completion = cmp.config.window.bordered(),

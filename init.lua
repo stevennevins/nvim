@@ -24,11 +24,6 @@ local function map(mode, l, r, opts)
     vim.keymap.set(mode, l, r, opts)
 end
 
--- Move around open buffers
-map("n", "]b", "<cmd>:bnext<CR>")
-map("n", "[b", "<cmd>:bprevious<CR>")
-map("n", "]B", "<cmd>:blast<CR>")
-map("n", "[B", "<cmd>:bfirst<CR>")
 -- Move around splits using Ctrl + {h,j,k,l}
 map("n", "<C-h>", "<C-w>h")
 map("n", "<C-j>", "<C-w>j")
@@ -59,12 +54,11 @@ require("lazy").setup {
     "jose-elias-alvarez/null-ls.nvim",
     "hrsh7th/nvim-cmp",
     "hrsh7th/cmp-nvim-lsp",
-    {"L3MON4D3/LuaSnip",
-	run = "make install_jsregexp"},
+    { "L3MON4D3/LuaSnip", run = "make install_jsregexp" },
     "neovim/nvim-lspconfig",
     {
         "VonHeikemen/lsp-zero.nvim",
-        branch = "v2.x",
+        branch = "v3.x",
     },
     "onsails/lspkind-nvim",
     "james1236/backseat.nvim",
@@ -96,7 +90,7 @@ vim.o.confirm = true
 vim.o.backup = false
 vim.o.ttyfast = true
 vim.o.termguicolors = true
-vim.cmd.colorscheme("base16-monokai")
+vim.cmd.colorscheme "base16-monokai"
 -- Highlight on yank
 vim.cmd [[
   augroup YankHighlight
@@ -117,15 +111,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end,
 })
 
--- require("conform").setup {
---     formatters_by_ft = {
---         lua = { "stylua" },
---         python = { "ruff" },
---         toml = { "taplo" },
---         json = { "prettier" },
---         markdown = { "prettier" },
---     },
--- }
+require("conform").setup {
+    formatters_by_ft = {
+        lua = { "stylua" },
+        python = { "ruff" },
+        toml = { "taplo" },
+        json = { "prettier" },
+        markdown = { "prettier" },
+    },
+}
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
     callback = function()
@@ -143,7 +137,7 @@ require("hardtime").setup {}
 require("Comment").setup {}
 require("backseat").setup { openai_model_id = "gpt-3.5-turbo" }
 -- vim-chatgpt
-vim.g.chat_gpt_mod = "gpt-3.5-turbo"
+vim.g.chat_gpt_mod = "gpt-4-32k"
 
 -- whichkey
 require("which-key").setup {}
@@ -154,14 +148,14 @@ require("gitsigns").setup {}
 local lsp = require("lsp-zero").preset {
     setup_servers_on_start = false,
 }
-
 lsp.on_attach(function(client, bufnr)
     lsp.default_keymaps { buffer = bufnr }
+    client.server_capabilities.semanticTokensProvider = nil
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentFormattingRangeProvider = false
 end)
 
 lsp.setup_servers { "tsserver", "rust_analyzer", "lua_ls", "pylsp", "solidity_ls_nomicfoundation" }
-
-lsp.setup()
 
 local cmp = require "cmp"
 cmp.setup {

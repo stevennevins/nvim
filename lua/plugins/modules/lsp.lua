@@ -19,6 +19,8 @@ return {
             lsp_zero.set_server_config({
                 on_init = function(client)
                     client.server_capabilities.semanticTokensProvider = nil
+                    client.server_capabilities.documentFormattingProvider = false
+                    client.server_capabilities.documentFormattingRangeProvider = false
                 end,
             })
             local lua_opts = lsp_zero.nvim_lua_ls()

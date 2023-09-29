@@ -25,7 +25,7 @@ return {
             })
             local lua_opts = lsp_zero.nvim_lua_ls()
             require("lspconfig").lua_ls.setup(lua_opts)
-            lsp_zero.setup_servers({ "tsserver", "rust_analyzer", "solidity_ls" })
+            lsp_zero.setup_servers({ "tsserver", "rust_analyzer", "solidity_ls", "solidity_ls_nomicfoundation" })
             local cmp = require("cmp")
             local cmp_action = lsp_zero.cmp_action()
 

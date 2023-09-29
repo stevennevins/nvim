@@ -1,9 +1,9 @@
 return {
     {
         "james1236/backseat.nvim",
-        config = function()
-            require("backseat").setup({ openai_model_id = "gpt-3.5-turbo" })
-        end,
+        opts = {
+            openai_model_id = "gpt-3.5-turbo",
+        },
     },
     {
         "CoderCookE/vim-chatgpt",

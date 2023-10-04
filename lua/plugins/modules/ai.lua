@@ -2,7 +2,7 @@ return {
     {
         "james1236/backseat.nvim",
         opts = {
-            openai_model_id = "gpt-3.5-turbo",
+            openai_model_id = "gpt-3.5-turbo-16k",
         },
     },
     {

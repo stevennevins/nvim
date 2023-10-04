@@ -15,6 +15,7 @@ return {
                 toml = { "taplo" },
                 json = { "prettier" },
                 markdown = { "prettier" },
+                solidity = { "prettier" },
             },
         })
     end,

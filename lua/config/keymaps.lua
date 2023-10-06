@@ -19,7 +19,7 @@ map("n", "<C-x>", "<cmd>:bd<CR>")
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 -- map window maxize toggle
-map("n", "<C-f>", "<cmd>:MaximizerToggle<CR>")
+map("n", "<C-f>", "<cmd>:ZenMode<CR>")
 -- Terminal mappings
 map("t", "<C-[>", "<C-\\><C-n>") -- exit
 map("n", "<leader>dd", vim.diagnostic.open_float)

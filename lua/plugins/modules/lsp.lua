@@ -2,6 +2,7 @@ return {
     {
         "VonHeikemen/lsp-zero.nvim",
         branch = "v3.x",
+        event = "InsertEnter",
         dependencies = {
             "folke/neodev.nvim",
             "neovim/nvim-lspconfig",

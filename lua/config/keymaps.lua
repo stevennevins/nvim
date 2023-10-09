@@ -22,4 +22,17 @@ map("n", "<C-u>", "<C-u>zz")
 map("n", "<C-f>", "<cmd>:ZenMode<CR>")
 -- Terminal mappings
 map("t", "<C-[>", "<C-\\><C-n>") -- exit
-map("n", "<leader>dd", vim.diagnostic.open_float)
+
+vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", {})
+vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", {})
+vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", {})
+vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", {})
+vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", {})
+vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", {})
+vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", {})
+vim.keymap.set("n", "rn", "<cmd>lua vim.lsp.buf.rename()<cr>", {})
+vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", {})
+vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", {})
+vim.keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>", {})
+vim.keymap.set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<cr>", {})
+vim.keymap.set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<cr>", {})

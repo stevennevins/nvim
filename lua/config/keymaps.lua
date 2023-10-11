@@ -23,6 +23,9 @@ map("n", "<C-f>", "<cmd>:ZenMode<CR>")
 -- Terminal mappings
 map("t", "<C-[>", "<C-\\><C-n>") -- exit
 
+vim.keymap.set("n", "<leader>q", "<cmd>:copen<cr>", {})
+vim.keymap.set("n", "<leader>Q", "<cmd>:cclose<cr>", {})
+vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", {})
 vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", {})
 vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", {})
 vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", {})

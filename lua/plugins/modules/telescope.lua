@@ -10,6 +10,7 @@ return {
     event = "VeryLazy",
     dependencies = {
         "nvim-telescope/telescope-fzy-native.nvim",
+        "olacin/telescope-cc.nvim",
     },
     config = function()
         local telescope = require("telescope")
@@ -50,5 +51,6 @@ return {
         map("n", "<leader>g", builtin.live_grep)
         map("n", "<leader>p", builtin.resume)
         telescope.load_extension("fzy_native")
+        telescope.load_extension("conventional_commits")
     end,
 }

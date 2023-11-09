@@ -11,6 +11,7 @@ return {
             markdown = { "vale" },
             solidity = { "solhint" },
             python = { "ruff" },
+            javascript = { "biomejs" },
         }
     end,
 }

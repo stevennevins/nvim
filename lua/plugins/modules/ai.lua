@@ -1,5 +1,9 @@
 return {
     {
+        "David-Kunz/gen.nvim",
+        event = "VeryLazy",
+    },
+    {
         "james1236/backseat.nvim",
         event = "VeryLazy",
         opts = {

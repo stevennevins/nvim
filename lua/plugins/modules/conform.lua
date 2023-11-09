@@ -17,6 +17,7 @@ return {
                 json = { "prettier" },
                 markdown = { "prettier" },
                 solidity = { "prettier" },
+                javascript = { "biome" },
             },
         })
     end,

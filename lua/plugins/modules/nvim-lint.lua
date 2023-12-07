@@ -9,8 +9,8 @@ return {
         })
         require("lint").linters_by_ft = {
             markdown = { "vale", "typos", "write-good" },
-            solidity = { "solhint", "typos" },
-            python = { "ruff", "typos" },
+            solidity = { "solhint", "typos", "write-good" },
+            python = { "ruff", "typos", "write-good" },
             javascript = { "biomejs", "typos" },
         }
     end,

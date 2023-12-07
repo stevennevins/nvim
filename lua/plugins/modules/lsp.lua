@@ -7,6 +7,14 @@ return {
         end,
     },
     {
+        "ray-x/lsp_signature.nvim",
+        event = "VeryLazy",
+        opts = {},
+        config = function(_, opts)
+            require("lsp_signature").setup(opts)
+        end,
+    },
+    {
         "VonHeikemen/lsp-zero.nvim",
         branch = "v3.x",
         dependencies = {
@@ -19,8 +27,10 @@ return {
         },
         config = function()
             local lsp_zero = require("lsp-zero")
+            local lsp_signature_help = require("lsp_signature")
             lsp_zero.on_attach(function(client, bufnr)
                 lsp_zero.default_keymaps({ buffer = bufnr })
+                lsp_signature_help.on_attach({ buffer = bufnr })
             end)
 
             lsp_zero.set_server_config({

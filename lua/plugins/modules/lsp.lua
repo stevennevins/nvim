@@ -9,7 +9,9 @@ return {
     {
         "ray-x/lsp_signature.nvim",
         event = "VeryLazy",
-        opts = {},
+        opts = {
+            hint_enable = false,
+        },
         config = function(_, opts)
             require("lsp_signature").setup(opts)
         end,
@@ -42,7 +44,7 @@ return {
             })
             local lua_opts = lsp_zero.nvim_lua_ls()
             require("lspconfig").lua_ls.setup(lua_opts)
-            lsp_zero.setup_servers({ "biome", "tsserver", "rust_analyzer", "solidity_ls_nomicfoundation" })
+            lsp_zero.setup_servers({ "biome", "pyright", "tsserver", "rust_analyzer", "solidity_ls_nomicfoundation" })
             local cmp = require("cmp")
             local cmp_action = lsp_zero.cmp_action()
 

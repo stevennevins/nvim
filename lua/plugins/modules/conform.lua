@@ -16,6 +16,8 @@ return {
                 toml = { "taplo" },
                 json = { "prettier" },
                 markdown = { "prettier" },
+                html = { "prettier" },
+                css = { "prettier" },
                 solidity = { "prettier" },
                 javascript = { "biome" },
             },

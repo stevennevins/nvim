@@ -12,6 +12,8 @@ return {
             solidity = { "solhint", "typos", "write_good" },
             python = { "ruff", "typos", "write_good" },
             javascript = { "biomejs", "typos" },
+            html = { "tidy" },
+            css = { "stylelint" },
         }
     end,
 }

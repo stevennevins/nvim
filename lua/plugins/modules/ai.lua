@@ -10,14 +10,21 @@ return {
         "james1236/backseat.nvim",
         event = "VeryLazy",
         opts = {
-            openai_model_id = "gpt-4-1106-preview",
+            openai_model_id = "gpt-4-turbo-preview",
         },
     },
     {
         "CoderCookE/vim-chatgpt",
         event = "VeryLazy",
         config = function()
-            vim.g.chat_gpt_model = "gpt-4-1106-preview"
+            vim.g.chat_gpt_model = "gpt-4-turbo-preview"
+        end,
+    },
+
+    {
+        "robitx/gp.nvim",
+        config = function()
+            require("gp").setup()
         end,
     },
 }

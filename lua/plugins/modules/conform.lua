@@ -20,6 +20,7 @@ return {
                 css = { "prettier" },
                 solidity = { "prettier" },
                 javascript = { "biome" },
+                typescript = { "biome" },
             },
         })
     end,
